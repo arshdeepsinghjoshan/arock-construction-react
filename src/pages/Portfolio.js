@@ -7,16 +7,22 @@ const Portfolio = () => {
     const [activeFilter, setActiveFilter] = useState('*');
     const [currentPage, setCurrentPage] = useState(1);
     const [lastPage, setLastPage] = useState(1);
+    const [categories, setCategories] = useState([]);
 
     useEffect(() => {
         fetchProjects(1, activeFilter);
-    }, []);
+        fetchCategories();
 
+    }, []);
+    const fetchCategories = async () => {
+        const res = await axios.get('http://localhost:8000/api/project-categories');
+        setCategories(res.data.data);
+    };
     const fetchProjects = async (page = 1, filter = '*') => {
         let url = `http://localhost:8000/api/projects?page=${page}`;
 
         if (filter !== '*') {
-            url += `&category_key=${filter}`;
+            url += `&category_id=${filter}`;
         }
 
         const res = await axios.get(url);
@@ -52,18 +58,34 @@ const Portfolio = () => {
 
                     {/* FILTER */}
                     <ul className="properties-filter">
-                        <li><a className={activeFilter === '*' ? 'is_active' : ''} onClick={() => changeFilter('*')}>Show All</a></li>
-                        <li><a className={activeFilter === 'adv' ? 'is_active' : ''} onClick={() => changeFilter('adv')}>Single Story</a></li>
-                        <li><a className={activeFilter === 'str' ? 'is_active' : ''} onClick={() => changeFilter('str')}>Double Story</a></li>
-                        <li><a className={activeFilter === 'rac' ? 'is_active' : ''} onClick={() => changeFilter('rac')}>Split Levels</a></li>
+                        <li>
+                            <a
+                                className={activeFilter === '*' ? 'is_active' : ''}
+                                onClick={() => changeFilter('*')}
+                            >
+                                Show All
+                            </a>
+                        </li>
+
+                        {categories.map(cat => (
+                            <li key={cat.id}>
+                                <a
+                                    className={activeFilter === cat.id ? 'is_active' : ''}
+                                    onClick={() => changeFilter(cat.id)}
+                                >
+                                    {cat.name}
+                                </a>
+                            </li>
+                        ))}
                     </ul>
+
 
                     {/* CARDS */}
                     <div className="row properties-box">
                         {projects.map(item => (
                             <div
                                 key={item.id}
-                                className={`col-lg-4 col-md-6 align-self-center mb-30 properties-items ${item.category_key}`}
+                                className={`col-lg-4 col-md-6 align-self-center mb-30 properties-items ${item.category_id}`}
                             >
                                 <div className="item">
                                     <a href={`/property-details/${item.slug}`}>
