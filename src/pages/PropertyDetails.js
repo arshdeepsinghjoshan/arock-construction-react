@@ -208,7 +208,7 @@ const PropertyDetailsPage = () => {
               <div className="property-header mb-4">
                 <span className="badge bg-primary-custom mb-3">Featured Property</span>
                 <h1>{project.title}</h1>
-                <div className="property-location"><i className="bi bi-geo-alt-fill"></i> <span>{project.title}</span></div>
+                <div className="property-location"><i className="bi bi-geo-alt-fill"></i> <span>{project.address ? project.address : "Address not available"}</span></div>
                <div className="property-price">
   ${Number(project.price).toLocaleString()} <span>/ Starting from</span>
 </div>

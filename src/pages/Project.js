@@ -106,9 +106,7 @@ const Project = () => {
                                                     />
                                                 </div>
                                             </div>
-                                            <p className="logo-text mt-2">
-                                                Arock <span>Build</span>
-                                            </p>
+                                          
                                         </div>
                                         <a href={`/project/${project.id}`} className="overlay-btn">
                                             View Project

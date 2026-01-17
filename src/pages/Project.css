@@ -157,3 +157,24 @@ body {
     background: #4f46e5;
     color: white;
 }
+
+
+        /* Logo Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.4), 0 0 40px rgba(168, 85, 247, 0.2); }
+            50% { box-shadow: 0 0 30px rgba(99, 102, 241, 0.6), 0 0 60px rgba(168, 85, 247, 0.4); }
+        }
+
+        /* @keyframes spin-slow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        } */
+
+        .property-card:hover .logo-icon {
+            animation: float 2s ease-in-out infinite;
+        }
