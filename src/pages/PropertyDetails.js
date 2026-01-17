@@ -1,261 +1,75 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-// External CSS & assets should be imported via your bundler or included in index.html
-// Example:
-// import "bootstrap/dist/css/bootstrap.min.css";
-// import "bootstrap-icons/font/bootstrap-icons.css";
-// import "./assets/css/fontawesome.css";
-// import "./assets/css/templatemo-villa-agency.css";
-// import "./assets/css/owl.css";
-// import "./assets/css/animate.css";
-
-const galleryImages = [
-  {
-    src: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80",
-    title: "Luxury Modern Villa - Front View",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80",
-    title: "Living Room",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&q=80",
-    title: "Modern Kitchen",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=1200&q=80",
-    title: "Master Bedroom",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=1200&q=80",
-    title: "Bathroom",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1200&q=80",
-    title: "Swimming Pool",
-  },
-];
-
 const PropertyDetailsPage = () => {
+  const { slug } = useParams();
+  const [project, setProject] = useState(null);
+  const [galleryImages, setGalleryImages] = useState([]);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentZoom, setCurrentZoom] = useState(1);
 
+
+  const [thumbnail, setThumbnail] = useState('');
+
+  const fetchProject = async () => {
+    try {
+      const res = await axios.get(`http://localhost:8000/api/projects/${slug}`);
+      const data = res.data.data;
+      setProject(data.project);
+      setThumbnail(data.thumbnail || ''); // main image
+      setGalleryImages(data.gallery || []); // gallery images
+    } catch (err) {
+      setProject(null);
+    }
+  };
+
   const maxZoom = 3;
   const minZoom = 0.5;
 
-  // Init AOS and add keyboard events
   useEffect(() => {
-    AOS.init({
-      duration: 1000,
-      once: true,
-      offset: 120,
-      easing: "ease-in-out",
-    });
+    AOS.init({ duration: 1000, once: true, offset: 120, easing: "ease-in-out" });
+    fetchProject();
+  }, []);
 
-    const handleKeyDown = (e) => {
-      if (!lightboxOpen) return;
-      if (e.key === "Escape") closeLightbox();
-      if (e.key === "ArrowLeft") prevImage();
-      if (e.key === "ArrowRight") nextImage();
-      if (e.key === "+" || e.key === "=") zoomIn();
-      if (e.key === "-") zoomOut();
-      if (e.key === "0") resetZoom();
-    };
 
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [lightboxOpen, currentIndex, currentZoom]);
-
-  // Prevent body scroll when lightbox is open
-  useEffect(() => {
-    document.body.style.overflow = lightboxOpen ? "hidden" : "auto";
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [lightboxOpen]);
 
   const openLightbox = (index) => {
     setCurrentIndex(index);
     setCurrentZoom(1);
     setLightboxOpen(true);
   };
+  const closeLightbox = () => setLightboxOpen(false);
+  const prevImage = () => setCurrentIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
+  const nextImage = () => setCurrentIndex((prev) => (prev + 1) % galleryImages.length);
+  const zoomIn = () => setCurrentZoom((z) => (z < maxZoom ? z + 0.5 : z));
+  const zoomOut = () => setCurrentZoom((z) => (z > minZoom ? z - 0.5 : z));
+  const resetZoom = () => setCurrentZoom(1);
 
-  const closeLightbox = () => {
-    setLightboxOpen(false);
-  };
+  if (!project) {
+    return (
+      <div className="container py-5 text-center">
+        <h2 className="text-muted">Property not found</h2>
+      </div>
+    );
+  }
 
-  const prevImage = () => {
-    setCurrentZoom(1);
-    setCurrentIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
-  };
-
-  const nextImage = () => {
-    setCurrentZoom(1);
-    setCurrentIndex((prev) => (prev + 1) % galleryImages.length);
-  };
-
-  const zoomIn = () => {
-    setCurrentZoom((z) => (z < maxZoom ? z + 0.5 : z));
-  };
-
-  const zoomOut = () => {
-    setCurrentZoom((z) => (z > minZoom ? z - 0.5 : z));
-  };
-
-  const resetZoom = () => {
-    setCurrentZoom(1);
-  };
-
-  const currentImage = galleryImages[currentIndex];
+  const currentImage = galleryImages[currentIndex] || {};
 
   return (
     <>
-      {/* Inline styles moved here for convenience. You can move them to a CSS file. */}
-      <style>{`
-        /* .about-hero {
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/public/assets/images/w1.JPG');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            min-height: 60vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 100px;
-        } */
- .about-hero {
-     position: relative;
-     min-height: 70vh;
-     display: flex;
-     align-items: center;
-     overflow: hidden;
- }
-
- .about-hero .hero-bg {
-     position: absolute;
-     inset: 0;
-     width: 100%;
-     height: 100%;
-     object-fit: cover;
-     z-index: 0;
- }
-
- /* Overlay */
- .about-hero::before {
-     content: '';
-     position: absolute;
-     inset: 0;
-     background: rgba(0, 0, 0, 0.6);
-     z-index: 1;
- }
-
- .about-hero .container {
-     position: relative;
-     z-index: 2;
- }
-
-
- .value-icon {
-     width: 80px;
-     height: 80px;
-     border-radius: 50%;
-     display: flex;
-     align-items: center;
-     justify-content: center;
-     font-size: 2rem;
-     margin: 0 auto 1rem;
- }
-
- .bg-gradient-primary {
-     background: linear-gradient(135deg, #b17a27 0%, #ff8c00 100%);
-     color: #fff;
- }
-
- .mission-section {
-     background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
- }
-
- .cta-section {
-     position: relative;
-     background: linear-gradient(135deg, #b17a27 0%, #8c611f 100%);
-     padding: 100px 0 140px;
-     overflow: hidden;
- }
-
- /* Decorative gradient glow */
- .cta-section::before {
-     content: "";
-     position: absolute;
-     top: -40%;
-     left: -20%;
-     width: 600px;
-     height: 600px;
-     background: radial-gradient(circle, rgba(255, 255, 255, 0.15), transparent 60%);
-     border-radius: 50%;
- }
-
- .cta-section h2 {
-     letter-spacing: 0.5px;
- }
-
- .cta-section p {
-     max-width: 650px;
-     margin: auto;
- }
-
- /* CTA Buttons */
- .cta-section .btn {
-     border-radius: 50px;
-     padding: 14px 36px;
-     transition: all 0.4s ease;
- }
-
- .cta-section .btn-light:hover {
-     background: #fff;
-     color: #b17a27;
-     transform: translateY(-4px);
- }
-
- .cta-section .btn-outline-light:hover {
-     background: #fff;
-     color: #b17a27;
-     border-color: #fff;
-     transform: translateY(-4px);
- }
-
-
- .quote-card {
-     border-left: 5px solid #b17a27;
- }
-      `}</style>
-
-      
+      {/* HERO — same design */}
       <section className="about-hero">
         <div className="container text-center text-white">
-          <h1
-            className="fw-bold mb-3 display-5 display-md-4 display-lg-3"
-            data-aos="fade-up"
-          >
-            Single Property
-          </h1>
+          <h1 className="fw-bold mb-3 display-5" data-aos="fade-up">{project.title}</h1>
           <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="300">
             <ol className="breadcrumb justify-content-center">
-              <li className="breadcrumb-item">
-                <a href="/" className="text-white text-decoration-none">
-                  Home
-                </a>
-              </li>
-              <li className="breadcrumb-item">
-                <a href="/portfolio" className="text-white text-decoration-none">
-                  Portfolio
-                </a>
-              </li>
-              <li className="breadcrumb-item active text-white-50" aria-current="page">
-                Property Detail
-              </li>
+              <li className="breadcrumb-item"><a href="/" className="text-white text-decoration-none">Home</a></li>
+              <li className="breadcrumb-item"><a href="/portfolio" className="text-white text-decoration-none">Portfolio</a></li>
+              <li className="breadcrumb-item active text-white-50" aria-current="page">Property Detail</li>
             </ol>
           </nav>
         </div>
@@ -265,192 +79,140 @@ const PropertyDetailsPage = () => {
       <section className="py-5">
         <div className="container">
           <div className="row g-5">
-            {/* Property Images */}
+
+            {/* Gallery */}
             <div className="col-lg-8" data-aos="fade-up">
               <div className="property-gallery">
-                {/* Main Image */}
                 <div className="main-property-image" onClick={() => openLightbox(0)}>
                   <img
-                    src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80"
-                    alt="Luxury Villa"
-                    id="mainImage"
+                    src={thumbnail || galleryImages[0]?.src} // fallback to first gallery if no thumbnail
+                    alt={project.title}
                   />
-                  <span className="gallery-badge">For Sale</span>
-                  <div className="gallery-photos-count" onClick={() => openLightbox(0)}>
+                  <span className="gallery-badge">{project.status || "For Sale"}</span>
+                  <div className="gallery-photos-count">
                     <i className="bi bi-images"></i>
-                    <span id="photoCount">{galleryImages.length} Photos</span>
+                    <span>{galleryImages.length} Photos</span>
                   </div>
                 </div>
 
-                {/* Thumbnails */}
-                <div className="thumbnail-grid" id="thumbnailGrid">
+                <div className="thumbnail-grid">
                   {galleryImages.map((img, i) => (
-                    <div
-                      key={i}
-                      className="thumbnail-item"
-                      onClick={() => openLightbox(i)}
-                    >
-                      <img src={img.src.replace("w=1200", "w=300")} alt={img.title} />
-                      <div className="thumbnail-overlay">
-                        <i className="bi bi-zoom-in"></i>
-                      </div>
+                    <div key={i} className="thumbnail-item" onClick={() => openLightbox(i)}>
+                      <img src={img.src} alt={img.title} />
+                      <div className="thumbnail-overlay"><i className="bi bi-zoom-in"></i></div>
                     </div>
                   ))}
+
                 </div>
               </div>
 
               {/* Description */}
               <div className="mt-5">
                 <h3 className="section-title-custom">Description</h3>
-                <p className="text-muted" style={{ lineHeight: 1.9 }}>
-                  Welcome to this stunning luxury villa that epitomizes modern living at its
-                  finest. This exceptional property offers an unparalleled combination of
-                  elegance, comfort, and breathtaking design that will captivate you from
-                  the moment you arrive.
-                </p>
-                <p className="text-muted" style={{ lineHeight: 1.9 }}>
-                  Nestled in a prestigious neighborhood, this architectural masterpiece
-                  features expansive living spaces, floor-to-ceiling windows, and premium
-                  finishes throughout. The open-concept design seamlessly blends indoor and
-                  outdoor living, perfect for entertaining or relaxing in style.
-                </p>
-                <p className="text-muted" style={{ lineHeight: 1.9 }}>
-                  Every detail has been carefully curated to provide the ultimate in luxury
-                  living, from the gourmet kitchen with top-of-the-line appliances to the
-                  lavish master suite with panoramic views. This is more than a home – it's
-                  a lifestyle statement.
-                </p>
+                {/* <p className="text-muted" style={{ lineHeight: 1.9 }}>{project.content}</p> */}
+                <div
+                  className="text-muted"
+                  style={{ lineHeight: 1.9 }}
+                  dangerouslySetInnerHTML={{ __html: project.content }}
+                ></div>
               </div>
 
               {/* Property Details Grid */}
-              <div className="row g-4 mt-3">
-                <div className="col-md-3 col-6">
-                  <div className="info-card">
-                    <div className="info-card-icon">
-                      <i className="bi bi-house-door"></i>
+              <div className="row g-4 mt-3"><div className="row g-4 mt-3">
+                {project && (
+                  <>
+                    <div className="col-md-3 col-6">
+                      <div className="info-card">
+                        <div className="info-card-icon">
+                          <i className="bi bi-house-door"></i>
+                        </div>
+                        <h5>{project.features.total_area}</h5>
+                        <span>Total Area</span>
+                      </div>
                     </div>
-                    <h5>450 m²</h5>
-                    <span>Total Area</span>
-                  </div>
-                </div>
-                <div className="col-md-3 col-6">
-                  <div className="info-card">
-                    <div className="info-card-icon">
-                      <i className="bi bi-door-open"></i>
+
+                    <div className="col-md-3 col-6">
+                      <div className="info-card">
+                        <div className="info-card-icon">
+                          <i className="bi bi-door-open"></i>
+                        </div>
+                        <h5>{project.features.bedrooms}</h5>
+                        <span>Bedrooms</span>
+                      </div>
                     </div>
-                    <h5>4</h5>
-                    <span>Bedrooms</span>
-                  </div>
-                </div>
-                <div className="col-md-3 col-6">
-                  <div className="info-card">
-                    <div className="info-card-icon">
-                      <i className="bi bi-droplet"></i>
+
+                    <div className="col-md-3 col-6">
+                      <div className="info-card">
+                        <div className="info-card-icon">
+                          <i className="bi bi-droplet"></i>
+                        </div>
+                        <h5>{project.features.bathrooms}</h5>
+                        <span>Bathrooms</span>
+                      </div>
                     </div>
-                    <h5>3</h5>
-                    <span>Bathrooms</span>
-                  </div>
-                </div>
-                <div className="col-md-3 col-6">
-                  <div className="info-card">
-                    <div className="info-card-icon">
-                      <i className="bi bi-car-front"></i>
+
+                    <div className="col-md-3 col-6">
+                      <div className="info-card">
+                        <div className="info-card-icon">
+                          <i className="bi bi-car-front"></i>
+                        </div>
+                        <h5>{project.features.garages}</h5>
+                        <span>Garages</span>
+                      </div>
                     </div>
-                    <h5>2</h5>
-                    <span>Garages</span>
-                  </div>
-                </div>
+                  </>
+                )}
               </div>
 
               {/* Amenities */}
-              <div className="mt-5">
-                <h3 className="section-title-custom">Amenities</h3>
-                <div className="row g-3">
-                  <div className="col-md-6">
-                    <div className="amenity-item">
-                      <div className="amenity-icon">
-                        <i className="bi bi-wifi"></i>
-                      </div>
-                      <span>High-Speed Internet</span>
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="amenity-item">
-                      <div className="amenity-icon">
-                        <i className="bi bi-snow"></i>
-                      </div>
-                      <span>Central Air Conditioning</span>
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="amenity-item">
-                      <div className="amenity-icon">
-                        <i className="bi bi-fire"></i>
-                      </div>
-                      <span>Central Heating</span>
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="amenity-item">
-                      <div className="amenity-icon">
-                        <i className="bi bi-shield-check"></i>
-                      </div>
-                      <span>24/7 Security System</span>
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="amenity-item">
-                      <div className="amenity-icon">
-                        <i className="bi bi-water"></i>
-                      </div>
-                      <span>Swimming Pool</span>
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="amenity-item">
-                      <div className="amenity-icon">
-                        <i className="bi bi-tree"></i>
-                      </div>
-                      <span>Private Garden</span>
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="amenity-item">
-                      <div className="amenity-icon">
-                        <i className="bi bi-tv"></i>
-                      </div>
-                      <span>Smart Home System</span>
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="amenity-item">
-                      <div className="amenity-icon">
-                        <i className="bi bi-box-seam"></i>
-                      </div>
-                      <span>Storage Room</span>
-                    </div>
-                  </div>
-                </div>
+<div className="mt-5">
+  <h3 className="section-title-custom">Amenities</h3>
+  <div className="row g-3">
+    {project.amenities && project.amenities.length > 0 ? (
+      project.amenities.map((amenity, index) => {
+        // Map your amenity names to icons
+        const iconMap = {
+          "High-Speed Internet": "bi-wifi",
+          "Central Air Conditioning": "bi-snow",
+          "Central Heating": "bi-fire",
+          "24/7 Security System": "bi-shield-check",
+          "Swimming Pool": "bi-water",
+          "Private Garden": "bi-tree",
+          "Smart Home System": "bi-tv",
+          "Storage Room": "bi-box-seam",
+        };
+
+        const iconClass = iconMap[amenity] || "bi-star"; // fallback icon
+
+        return (
+          <div className="col-md-6" key={index}>
+            <div className="amenity-item">
+              <div className="amenity-icon">
+                <i className={`bi ${iconClass}`}></i>
               </div>
+              <span>{amenity}</span>
+            </div>
+          </div>
+        );
+      })
+    ) : (
+      <p>No amenities available.</p>
+    )}
+  </div>
+</div>
+</div>
             </div>
 
-            {/* Sidebar */}
+            {/* Sidebar remains the same */}
             <div className="col-lg-4" data-aos="fade-up">
-              {/* Property Info */}
               <div className="property-header mb-4">
                 <span className="badge bg-primary-custom mb-3">Featured Property</span>
-                <h1>Luxury Modern Villa</h1>
-                <div className="property-location">
-                  <i className="bi bi-geo-alt-fill"></i>
-                  <span>24 New Street, Miami, OR 24560</span>
-                </div>
-                <div className="property-price">
-                  $2,450,000 <span>/ Starting from</span>
-                </div>
-              </div>
-
-              {/* Agent Card */}
-              <div className="agent-card mb-4">
+                <h1>{project.title}</h1>
+                <div className="property-location"><i className="bi bi-geo-alt-fill"></i> <span>{project.title}</span></div>
+               <div className="property-price">
+  ${Number(project.price).toLocaleString()} <span>/ Starting from</span>
+</div>
+       <div className="agent-card mb-4">
                 <div className="agent-avatar">
                   <img
                     src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&q=80"
@@ -530,73 +292,39 @@ const PropertyDetailsPage = () => {
                 </form>
               </div>
 
-              {/* Quick Info */}
-              <div className="info-card mt-4">
-                <h5 className="fw-bold mb-3">Quick Info</h5>
-                <div className="d-flex justify-content-between py-2 border-bottom">
-                  <span className="text-muted">Property ID:</span>
-                  <span className="fw-bold">#PRO-2024-001</span>
-                </div>
-                <div className="d-flex justify-content-between py-2 border-bottom">
-                  <span className="text-muted">Year Built:</span>
-                  <span className="fw-bold">2023</span>
-                </div>
-                <div className="d-flex justify-content-between py-2 border-bottom">
-                  <span className="text-muted">Property Type:</span>
-                  <span className="fw-bold">Villa</span>
-                </div>
-                <div className="d-flex justify-content-between py-2 border-bottom">
-                  <span className="text-muted">Status:</span>
-                  <span className="fw-bold text-success">Available</span>
-                </div>
-                <div className="d-flex justify-content-between py-2">
-                  <span className="text-muted">Price per m²:</span>
-                  <span className="fw-bold">$5,444</span>
-                </div>
-              </div>
+             
+             
+             <div className="info-card mt-4">
+  <h5 className="fw-bold mb-3">Quick Info</h5>
+  {project && Object.entries(project.quick_info).map(([key, value]) => (
+    <div className="d-flex justify-content-between py-2 border-bottom" key={key}>
+      <span className="text-muted">{key}</span>
+      <span className="fw-bold">{value}</span>
+    </div>
+  ))}
+</div>
+ </div>
             </div>
+
           </div>
         </div>
       </section>
 
-
-      {/* Lightbox Modal */}
-      <div
-        className={`lightbox ${lightboxOpen ? "active" : ""}`}
-        id="lightbox"
-        onClick={(e) => {
-          if (e.target.id === "lightbox") closeLightbox();
-        }}
-      >
+      {/* Lightbox */}
+      <div className={`lightbox ${lightboxOpen ? "active" : ""}`} id="lightbox" onClick={(e) => e.target.id === "lightbox" && closeLightbox()}>
         <div className="lightbox-content">
-          <button className="lightbox-close" onClick={closeLightbox}>
-            &times;
-          </button>
-          <button className="lightbox-nav lightbox-prev" onClick={prevImage}>
-            <i className="bi bi-chevron-left"></i>
-          </button>
+          <button className="lightbox-close" onClick={closeLightbox}>&times;</button>
+          <button className="lightbox-nav lightbox-prev" onClick={prevImage}><i className="bi bi-chevron-left"></i></button>
           <img
-            id="lightbox-image"
-            src={currentImage?.src}
-            alt="Property"
-            style={{ transform: `scale(${currentZoom})` }}
+            src={galleryImages[currentIndex]?.src}
+            alt={galleryImages[currentIndex]?.title}
           />
-          <button className="lightbox-nav lightbox-next" onClick={nextImage}>
-            <i className="bi bi-chevron-right"></i>
-          </button>
-          <div className="lightbox-caption" id="lightbox-caption">
-            {currentImage?.title}
-          </div>
+          <button className="lightbox-nav lightbox-next" onClick={nextImage}><i className="bi bi-chevron-right"></i></button>
+          <div className="lightbox-caption">{currentImage?.title}</div>
           <div className="zoom-controls">
-            <button className="zoom-btn" onClick={zoomOut} title="Zoom Out">
-              <i className="bi bi-dash"></i>
-            </button>
-            <button className="zoom-btn" onClick={resetZoom} title="Reset">
-              <i className="bi bi-arrow-repeat"></i>
-            </button>
-            <button className="zoom-btn" onClick={zoomIn} title="Zoom In">
-              <i className="bi bi-plus"></i>
-            </button>
+            <button className="zoom-btn" onClick={zoomOut}><i className="bi bi-dash"></i></button>
+            <button className="zoom-btn" onClick={resetZoom}><i className="bi bi-arrow-repeat"></i></button>
+            <button className="zoom-btn" onClick={zoomIn}><i className="bi bi-plus"></i></button>
           </div>
         </div>
       </div>
