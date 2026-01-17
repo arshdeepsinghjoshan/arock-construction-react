@@ -1,17 +1,29 @@
-import React, { useEffect } from 'react';
-import './Portfolio.css'; // Import the custom styles for this page
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import './Portfolio.css';
 
 const Portfolio = () => {
-    // If you need to refresh AOS or isotope when component mounts
-    // useEffect(() => {
-    //     if (window.AOS) {
-    //         window.AOS.refresh();
-    //     }
-    // }, []);
+    const [projects, setProjects] = useState([]);
+    const [activeFilter, setActiveFilter] = useState('*');
+
+    useEffect(() => {
+        fetchProjects();
+    }, []);
+
+    const fetchProjects = async () => {
+        const res = await axios.get('http://localhost:8000/api/projects');
+        setProjects(res.data.data.data);
+    };
+
+    const filteredProjects =
+        activeFilter === '*'
+            ? projects
+            : projects.filter(p => p.category_key === activeFilter);
 
     return (
         <main>
-            {/* Hero Section */}
+
+            {/* HERO — SAME */}
             <section className="about-hero">
                 <img
                     src="/assets/images/w1.JPG"
@@ -33,179 +45,59 @@ const Portfolio = () => {
                 </div>
             </section>
 
-            {/* Properties Section */}
+            {/* PROPERTIES */}
             <div className="section properties">
                 <div className="container">
+
+                    {/* FILTER — SAME UI */}
                     <ul className="properties-filter">
-                        <li>
-                            <a className="is_active" href="#!" data-filter="*">Show All</a>
-                        </li>
-                        <li>
-                            <a href="#!" data-filter=".adv">Single Story</a>
-                        </li>
-                        <li>
-                            <a href="#!" data-filter=".str">Double Story</a>
-                        </li>
-                        <li>
-                            <a href="#!" data-filter=".rac">Split Levels</a>
-                        </li>
+                        <li><a className={activeFilter === '*' ? 'is_active' : ''} onClick={() => setActiveFilter('*')}>Show All</a></li>
+                        <li><a className={activeFilter === 'adv' ? 'is_active' : ''} onClick={() => setActiveFilter('adv')}>Single Story</a></li>
+                        <li><a className={activeFilter === 'str' ? 'is_active' : ''} onClick={() => setActiveFilter('str')}>Double Story</a></li>
+                        <li><a className={activeFilter === 'rac' ? 'is_active' : ''} onClick={() => setActiveFilter('rac')}>Split Levels</a></li>
                     </ul>
-                    
+
+                    {/* CARDS — SAME STRUCTURE */}
                     <div className="row properties-box">
-                        {/* Property 1 */}
-                        <div className="col-lg-4 col-md-6 align-self-center mb-30 properties-items col-md-6 adv">
-                            <div className="item">
-                                <a href="/property-details">
-                                    <img src="/assets/images/property-01.jpg" alt="Property 1" />
-                                </a>
-                                <span className="category">Luxury Villa</span>
-                                <h4>
-                                    <a href="/property-details">18 Old Street Miami, OR 97219</a>
-                                </h4>
-                                <ul className="property-info">
-                                    <li><i className="fa fa-bed"></i> Bedrooms: <span>8</span></li>
-                                    <li><i className="fa fa-bath"></i> Bathrooms: <span>8</span></li>
-                                    <li><i className="fa fa-vector-square"></i> Total Floor Area: <span>545m2</span></li>
-                                    <li><i className="fa fa-building"></i> Floor: <span>3</span></li>
-                                    <li><i className="fa fa-car"></i> Parking: <span>6 spots</span></li>
-                                </ul>
-                                <div className="property-hover-btn">
-                                    <a href="/property-details">View Details</a>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        {/* Property 3 */}
-                        <div className="col-lg-4 col-md-6 align-self-center mb-30 properties-items col-md-6 adv rac">
-                            <div className="item">
-                                <a href="/property-details">
-                                    <img src="/assets/images/property-03.jpg" alt="Property 3" />
-                                </a>
-                                <span className="category">Luxury Villa</span>
-                                <h4>
-                                    <a href="/property-details">26 Mid Street Portland, OR 38540</a>
-                                </h4>
-                                <ul className="property-info">
-                                    <li><i className="fa fa-bed"></i> Bedrooms: <span>5</span></li>
-                                    <li><i className="fa fa-bath"></i> Bathrooms: <span>4</span></li>
-                                    <li><i className="fa fa-vector-square"></i> Total Floor Area: <span>225m2</span></li>
-                                    <li><i className="fa fa-building"></i> Floor: <span>3</span></li>
-                                    <li><i className="fa fa-car"></i> Parking: <span>10 spots</span></li>
-                                </ul>
-                                <div className="property-hover-btn">
-                                    <a href="/property-details">View Details</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Property 4 */}
-                        <div className="col-lg-4 col-md-6 align-self-center mb-30 properties-items col-md-6 str">
-                            <div className="item">
-                                <a href="/property-details">
-                                    <img src="/assets/images/property-04.jpg" alt="Property 4" />
-                                </a>
-                                <span className="category">Apartment</span>
-                                <h4>
-                                    <a href="/property-details">12 Hope Street Portland, OR 12650</a>
-                                </h4>
-                                <ul className="property-info">
-                                    <li><i className="fa fa-bed"></i> Bedrooms: <span>4</span></li>
-                                    <li><i className="fa fa-bath"></i> Bathrooms: <span>3</span></li>
-                                    <li><i className="fa fa-vector-square"></i> Total Floor Area: <span>125m2</span></li>
-                                    <li><i className="fa fa-building"></i> Floor: <span>25th</span></li>
-                                    <li><i className="fa fa-car"></i> Parking: <span>2 cars</span></li>
-                                </ul>
-                                <div className="property-hover-btn">
-                                    <a href="/property-details">View Details</a>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        {/* Property 6 */}
-                        <div className="col-lg-4 col-md-6 align-self-center mb-30 properties-items col-md-6 rac adv">
-                            <div className="item">
-                                <a href="/property-details">
-                                    <img src="/assets/images/property-06.jpg" alt="Property 6" />
-                                </a>
-                                <span className="category">Modern Condo</span>
-                                <h4>
-                                    <a href="/property-details">22 Hope Street Portland, OR 16540</a>
-                                </h4>
-                                <ul className="property-info">
-                                    <li><i className="fa fa-bed"></i> Bedrooms: <span>3</span></li>
-                                    <li><i className="fa fa-bath"></i> Bathrooms: <span>2</span></li>
-                                    <li><i className="fa fa-vector-square"></i> Total Floor Area: <span>165m2</span></li>
-                                    <li><i className="fa fa-building"></i> Floor: <span>26th</span></li>
-                                    <li><i className="fa fa-car"></i> Parking: <span>3 cars</span></li>
-                                </ul>
-                                <div className="property-hover-btn">
-                                    <a href="/property-details">View Details</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Property 7 */}
-                        <div className="col-lg-4 col-md-6 align-self-center mb-30 properties-items col-md-6 rac str">
-                            <div className="item">
-                                <a href="/property-details">
-                                    <img src="/assets/images/property-03.jpg" alt="Property 7" />
-                                </a>
-                                <span className="category">Luxury Villa</span>
-                                <h4>
-                                    <a href="/property-details">14 Mid Street Miami, OR 36450</a>
-                                </h4>
-                                <ul className="property-info">
-                                    <li><i className="fa fa-bed"></i> Bedrooms: <span>8</span></li>
-                                    <li><i className="fa fa-bath"></i> Bathrooms: <span>8</span></li>
-                                    <li><i className="fa fa-vector-square"></i> Total Floor Area: <span>550m2</span></li>
-                                    <li><i className="fa fa-building"></i> Floor: <span>3</span></li>
-                                    <li><i className="fa fa-car"></i> Parking: <span>12 spots</span></li>
-                                </ul>
-                                <div className="property-hover-btn">
-                                    <a href="/property-details">View Details</a>
-                                </div>
-                            </div>
-                        </div>
-
                      
+                        {filteredProjects.map(item => (
+                            <div
+                                key={item.id}
+                                className={`col-lg-4 col-md-6 align-self-center mb-30 properties-items ${item.category_key}`}
+                            >
+                                <div className="item">
+                                    <a href={`/property-details/${item.slug}`}>
+                                        <img
+                                            src={item.thumbnail_image}
+                                            alt={item.title}
+                                            loading="lazy"
+                                        />
+                                    </a>
 
-                        {/* Property 9 */}
-                        <div className="col-lg-4 col-md-6 align-self-center mb-30 properties-items col-md-6 rac adv">
-                            <div className="item">
-                                <a href="/property-details">
-                                    <img src="/assets/images/property-01.jpg" alt="Property 9" />
-                                </a>
-                                <span className="category">Luxury Villa</span>
-                                <h4>
-                                    <a href="/property-details">34 New Street Miami, OR 24650</a>
-                                </h4>
-                                <ul className="property-info">
-                                    <li><i className="fa fa-bed"></i> Bedrooms: <span>10</span></li>
-                                    <li><i className="fa fa-bath"></i> Bathrooms: <span>12</span></li>
-                                    <li><i className="fa fa-vector-square"></i> Total Floor Area: <span>860m2</span></li>
-                                    <li><i className="fa fa-building"></i> Floor: <span>3</span></li>
-                                    <li><i className="fa fa-car"></i> Parking: <span>10 spots</span></li>
-                                </ul>
-                                <div className="property-hover-btn">
-                                    <a href="/property-details">View Details</a>
+                                    <span className="category">{item.title}</span>
+
+                                    <h4>
+                                        <a href={`/property-details/${item.slug}`}>
+                                            {item.title}
+                                        </a>
+                                    </h4>
+
+                                    <ul className="property-info">
+                                        <li><i className="fa fa-bed"></i> Bedrooms: <span>{item.bedrooms}</span></li>
+                                        <li><i className="fa fa-bath"></i> Bathrooms: <span>{item.bathrooms}</span></li>
+                                        <li><i className="fa fa-vector-square"></i> Total Floor Area: <span>{item.area}</span></li>
+                                        <li><i className="fa fa-building"></i> Floor: <span>{item.floor}</span></li>
+                                        <li><i className="fa fa-car"></i> Parking: <span>{item.parking}</span></li>
+                                    </ul>
+
+                                    <div className="property-hover-btn">
+                                        <a href={`/property-details/${item.slug}`}>View Details</a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        ))}
                     </div>
 
-                    {/* Pagination */}
-                    <div className="row">
-                        <div className="col-lg-12">
-                            <ul className="pagination">
-                                <li><a href="#!">1</a></li>
-                                <li><a className="is_active" href="#!">2</a></li>
-                                <li><a href="#!">3</a></li>
-                                <li><a href="#!">&gt;&gt;</a></li>
-                            </ul>
-                        </div>
-                    </div>
                 </div>
             </div>
         </main>

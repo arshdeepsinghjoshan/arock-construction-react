@@ -1,5 +1,4 @@
-/* Custom styles from your HTML's <style> block and for Portfolio page */
-
+/* Hero Section */
 /* .about-hero {
     background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/public/assets/images/w1.JPG');
     background-size: cover;
@@ -12,166 +11,63 @@
     margin-top: 100px;
 } */
 
-/* Properties filtering styles (from template CSS, not inline) */
-.properties-filter {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 50px 0;
+/* Property Info */
+.property-info {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-    gap: 15px; /* Added for better spacing */
-}
-
-.properties-filter li a {
-    background-color: #f2f2f2;
-    padding: 10px 20px;
-    border-radius: 25px;
-    color: #4a4a4a;
-    font-size: 15px;
-    font-weight: 500;
-    transition: all .3s;
-    text-decoration: none;
-    display: block; /* Make the whole area clickable */
-}
-
-.properties-filter li a:hover,
-.properties-filter li a.is_active {
-    background-color: #ee626b; /* Use your theme's primary color */
-    color: #fff;
-}
-
-/* Pagination styles (from template CSS, not inline) */
-.pagination {
-    margin-top: 30px;
-    text-align: center;
-    display: flex;
-    justify-content: center;
+    gap: 12px;
+    padding: 20px 0;
+    margin: 0;
     list-style: none;
-    padding: 0;
 }
 
-.pagination li {
-    margin: 0 5px;
-}
-
-.pagination li a {
-    width: 40px;
-    height: 40px;
-    border: 1px solid #eee;
-    font-size: 15px;
-    font-weight: 500;
-    color: #1e1e1e;
-    transition: all .3s;
+.property-info li {
     display: flex;
     align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    border-radius: 5px;
+    gap: 6px;
+    font-size: 13px;
+    color: #444;
 }
 
-.pagination li a:hover,
-.pagination li a.is_active {
-    background-color: #ee626b; /* Use your theme's primary color */
-    border-color: #ee626b;
-    color: #fff;
+.property-info li i {
+    color: #b17a27;
+    font-size: 16px;
 }
 
-/* These styles were from the About.css for consistency, ensure they are here or in a global file */
-.value-icon {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    margin: 0 auto 1rem;
+.property-info li span {
+    font-weight: 700;
+    color: #333;
 }
 
-.bg-gradient-primary {
-    background: linear-gradient(135deg, #b17a27 0%, #ff8c00 100%);
-    color: #fff;
+/* Sold out state */
+.card-sold {
+    filter: grayscale(1);
+    opacity: 0.65;
 }
 
-.mission-section {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+.card-sold img {
+    mix-blend-mode: luminosity;
 }
 
-.cta-section {
-    position: relative;
-    background: linear-gradient(135deg, #b17a27 0%, #8c611f 100%);
-    padding: 100px 0 140px;
-    overflow: hidden;
-}
-
-/* Decorative gradient glow */
-.cta-section::before {
-    content: "";
+.sold-stamp {
     position: absolute;
-    top: -40%;
-    left: -20%;
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.15), transparent 60%);
-    border-radius: 50%;
-    z-index: 0; /* Ensure it's behind text */
-}
-
-/* Ensure content is above the pseudo-element */
-.cta-section > .container {
-    position: relative;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
     z-index: 1;
 }
 
-.cta-section h2 {
-    letter-spacing: 0.5px;
-}
-
-.cta-section p {
-    max-width: 650px;
-    margin: auto;
-}
-
-/* CTA Buttons */
-.cta-section .btn {
-    border-radius: 50px;
-    padding: 14px 36px;
-    transition: all 0.4s ease;
-}
-
-.cta-section .btn-light:hover {
-    background: #fff;
-    color: #b17a27;
-    transform: translateY(-4px);
-}
-
-.cta-section .btn-outline-light:hover {
-    background: #fff;
-    color: #b17a27;
-    border-color: #fff;
-    transform: translateY(-4px);
-}
-
-
-.quote-card {
-    border-left: 5px solid #b17a27;
-}
-
-/* Define .text-colour if not already defined in your global CSS */
-.text-colour {
-    color: #c59d5f; /* Example: use the accent color from your design */
-}
-
-/* Optional: Button color for .btn-col if it's a custom primary button */
-/* You might already have this defined in your general template CSS */
-.btn-col {
-    background-color: #c59d5f; /* Or the exact hex from your design */
-    border-color: #c59d5f;
-    color: #fff;
-}
-.btn-col:hover {
-    background-color: #a07e4d; /* Slightly darker for hover */
-    border-color: #a07e4d;
-    color: #fff;
+.sold-stamp-text {
+    display: inline-block;
+    padding: 0.4rem 1.4rem;
+    border: 2px solid rgba(248, 113, 113, 0.95);
+    color: rgba(248, 113, 113, 0.98);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    background: rgba(15, 23, 42, 0.8);
+    transform: rotate(-15deg);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
 }

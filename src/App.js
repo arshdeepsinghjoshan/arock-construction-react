@@ -1,72 +1,77 @@
-  import React, { useState, useEffect } from 'react';
-  import { BrowserRouter, Routes, Route } from 'react-router-dom';
-  import AOS from 'aos';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import AOS from 'aos';
 
-  // Components
-  import Preloader from './components/Preloader';
-  import Header from './components/Header';
-  import Footer from './components/Footer';
+// Components (NO lazy – always needed)
+import Preloader from './components/Preloader';
+import Header from './components/Header';
+import Footer from './components/Footer';
 
-  // Pages
-  import Home from './pages/Home';
-  import About from './pages/About';
-  import Properties from './pages/Properties';
-  import PropertyDetails from './pages/PropertyDetails';
-  import Contact from './pages/Contact';
-  import Portfolio from './pages/Portfolio';
-import CurrentOffer from './pages/CurrentOffer';
-import Project from './pages/Project';
+// Pages (LAZY LOAD 🔥)
+const Home = lazy(() => import('./pages/Home'));
+const About = lazy(() => import('./pages/About'));
+const Portfolio = lazy(() => import('./pages/Portfolio'));
+const PropertyDetails = lazy(() => import('./pages/PropertyDetails'));
+const Contact = lazy(() => import('./pages/Contact'));
+const Project = lazy(() => import('./pages/Project'));
+const CurrentOffer = lazy(() => import('./pages/CurrentOffer'));
 
-  function App() {
-    const [loading, setLoading] = useState(true);
-    const [animateContent, setAnimateContent] = useState(false);
+function App() {
+  const [loading, setLoading] = useState(true);
+  const [animateContent, setAnimateContent] = useState(false);
 
-    useEffect(() => {
-      AOS.init({
-        duration: 1000,
-        once: true,
-        offset: 120,
-        easing: 'ease-in-out'
-      });
+  // AOS Init + Preloader
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+      once: true,
+      offset: 120,
+      easing: 'ease-in-out'
+    });
 
-      const timer = setTimeout(() => {
-        setLoading(false);
-        setTimeout(() => {
-          setAnimateContent(true);
-        }, 100);
-      }, 3000);
+    const timer = setTimeout(() => {
+      setLoading(false);
+      setTimeout(() => {
+        setAnimateContent(true);
+      }, 100);
+    }, 3000);
 
-      return () => clearTimeout(timer);
-    }, []);
+    return () => clearTimeout(timer);
+  }, []);
 
-    useEffect(() => {
-      if (!loading) {
-        AOS.refresh();
-      }
-    }, [loading]);
-
-    // Show preloader only on first load
-    if (loading) {
-      return <Preloader />;
+  useEffect(() => {
+    if (!loading) {
+      AOS.refresh();
     }
+  }, [loading]);
 
-    return (
-      <BrowserRouter>
-        <div className="App">
-          <Header />
+  // 🔒 First load preloader
+  if (loading) {
+    return <Preloader />;
+  }
+
+  return (
+    <BrowserRouter>
+      <div className="App">
+        <Header />
+
+        {/* 👇 Lazy loading fallback */}
+        <Suspense fallback={<div className="page-loader">Loading...</div>}>
           <Routes>
             <Route path="/" element={<Home animateContent={animateContent} />} />
             <Route path="/about" element={<About />} />
             <Route path="/portfolio" element={<Portfolio />} />
-            <Route path="/property-details" element={<PropertyDetails />} />
+            <Route path="/property-details/:slug" element={<PropertyDetails />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/project" element={<Project />} />
             <Route path="/current-offer" element={<CurrentOffer />} />
           </Routes>
-          <Footer />
-        </div>
-      </BrowserRouter>
-    );
-  }
+        </Suspense>
 
-  export default App;
+        <Footer />
+      </div>
+    </BrowserRouter>
+  );
+}
+
+export default App;

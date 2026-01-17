@@ -232,16 +232,7 @@ const PropertyDetailsPage = () => {
  }
       `}</style>
 
-      {/* Preloader */}
-      {/* <div id="js-preloader" className="js-preloader">
-        <div className="preloader-inner">
-          <img src="assets/images/logo1.png" alt="Logo" className="loader-logo" />
-        </div>
-      </div> */}
-
-    
-
-      {/* Hero */}
+      
       <section className="about-hero">
         <div className="container text-center text-white">
           <h1
@@ -253,12 +244,12 @@ const PropertyDetailsPage = () => {
           <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="300">
             <ol className="breadcrumb justify-content-center">
               <li className="breadcrumb-item">
-                <a href="index.html" className="text-white text-decoration-none">
+                <a href="/" className="text-white text-decoration-none">
                   Home
                 </a>
               </li>
               <li className="breadcrumb-item">
-                <a href="index.html" className="text-white text-decoration-none">
+                <a href="/portfolio" className="text-white text-decoration-none">
                   Portfolio
                 </a>
               </li>
