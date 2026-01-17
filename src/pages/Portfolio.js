@@ -5,43 +5,44 @@ import './Portfolio.css';
 const Portfolio = () => {
     const [projects, setProjects] = useState([]);
     const [activeFilter, setActiveFilter] = useState('*');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [lastPage, setLastPage] = useState(1);
 
     useEffect(() => {
-        fetchProjects();
+        fetchProjects(1, activeFilter);
     }, []);
 
-    const fetchProjects = async () => {
-        const res = await axios.get('http://localhost:8000/api/projects');
+    const fetchProjects = async (page = 1, filter = '*') => {
+        let url = `http://localhost:8000/api/projects?page=${page}`;
+
+        if (filter !== '*') {
+            url += `&category_key=${filter}`;
+        }
+
+        const res = await axios.get(url);
+
         setProjects(res.data.data.data);
+        setCurrentPage(res.data.data.current_page);
+        setLastPage(res.data.data.last_page);
     };
 
-    const filteredProjects =
-        activeFilter === '*'
-            ? projects
-            : projects.filter(p => p.category_key === activeFilter);
+    const changeFilter = (filter) => {
+        setActiveFilter(filter);
+        fetchProjects(1, filter);
+    };
+
+    const changePage = (page) => {
+        fetchProjects(page, activeFilter);
+    };
 
     return (
         <main>
 
-            {/* HERO — SAME */}
+            {/* HERO */}
             <section className="about-hero">
-                <img
-                    src="/assets/images/w1.JPG"
-                    alt="About Arock Construction"
-                    className="hero-bg"
-                />
+                <img src="/assets/images/w1.JPG" alt="Portfolio" className="hero-bg" />
                 <div className="container text-center text-white">
-                    <h1 className="fw-bold mb-3 display-5 display-md-4 display-lg-3" data-aos="fade-up">
-                        Projects Arock Construction
-                    </h1>
-                    <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="300">
-                        <ol className="breadcrumb justify-content-center">
-                            <li className="breadcrumb-item">
-                                <a href="/" className="text-white text-decoration-none">Home</a>
-                            </li>
-                            <li className="breadcrumb-item active text-white-50" aria-current="page">Portfolio</li>
-                        </ol>
-                    </nav>
+                    <h1 className="fw-bold">Projects Arock Construction</h1>
                 </div>
             </section>
 
@@ -49,18 +50,17 @@ const Portfolio = () => {
             <div className="section properties">
                 <div className="container">
 
-                    {/* FILTER — SAME UI */}
+                    {/* FILTER */}
                     <ul className="properties-filter">
-                        <li><a className={activeFilter === '*' ? 'is_active' : ''} onClick={() => setActiveFilter('*')}>Show All</a></li>
-                        <li><a className={activeFilter === 'adv' ? 'is_active' : ''} onClick={() => setActiveFilter('adv')}>Single Story</a></li>
-                        <li><a className={activeFilter === 'str' ? 'is_active' : ''} onClick={() => setActiveFilter('str')}>Double Story</a></li>
-                        <li><a className={activeFilter === 'rac' ? 'is_active' : ''} onClick={() => setActiveFilter('rac')}>Split Levels</a></li>
+                        <li><a className={activeFilter === '*' ? 'is_active' : ''} onClick={() => changeFilter('*')}>Show All</a></li>
+                        <li><a className={activeFilter === 'adv' ? 'is_active' : ''} onClick={() => changeFilter('adv')}>Single Story</a></li>
+                        <li><a className={activeFilter === 'str' ? 'is_active' : ''} onClick={() => changeFilter('str')}>Double Story</a></li>
+                        <li><a className={activeFilter === 'rac' ? 'is_active' : ''} onClick={() => changeFilter('rac')}>Split Levels</a></li>
                     </ul>
 
-                    {/* CARDS — SAME STRUCTURE */}
+                    {/* CARDS */}
                     <div className="row properties-box">
-                     
-                        {filteredProjects.map(item => (
+                        {projects.map(item => (
                             <div
                                 key={item.id}
                                 className={`col-lg-4 col-md-6 align-self-center mb-30 properties-items ${item.category_key}`}
@@ -97,6 +97,60 @@ const Portfolio = () => {
                             </div>
                         ))}
                     </div>
+
+                    <div className="row">
+                        <div className="col-lg-12">
+                            <ul className="pagination">
+
+                                {/* PREV */}
+                                {currentPage > 1 && (
+                                    <li>
+                                        <a href="#!"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                changePage(currentPage - 1);
+                                            }}>
+                                            &laquo;
+                                        </a>
+                                    </li>
+                                )}
+
+                                {/* PAGE NUMBERS */}
+                                {[...Array(lastPage)].map((_, index) => {
+                                    const page = index + 1;
+                                    return (
+                                        <li key={page}>
+                                            <a
+                                                href="#!"
+                                                className={currentPage === page ? 'is_active' : ''}
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    changePage(page);
+                                                }}
+                                            >
+                                                {page}
+                                            </a>
+                                        </li>
+                                    );
+                                })}
+
+                                {/* NEXT */}
+                                {currentPage < lastPage && (
+                                    <li>
+                                        <a href="#!"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                changePage(currentPage + 1);
+                                            }}>
+                                            &raquo;
+                                        </a>
+                                    </li>
+                                )}
+
+                            </ul>
+                        </div>
+                    </div>
+
 
                 </div>
             </div>
