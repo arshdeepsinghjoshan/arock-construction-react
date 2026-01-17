@@ -1,0 +1,73 @@
+/* Hero Section */
+/* .about-hero {
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/public/assets/images/w1.JPG');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 100px;
+} */
+
+/* Property Info */
+.property-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 20px 0;
+    margin: 0;
+    list-style: none;
+}
+
+.property-info li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #444;
+}
+
+.property-info li i {
+    color: #b17a27;
+    font-size: 16px;
+}
+
+.property-info li span {
+    font-weight: 700;
+    color: #333;
+}
+
+/* Sold out state */
+.card-sold {
+    filter: grayscale(1);
+    opacity: 0.65;
+}
+
+.card-sold img {
+    mix-blend-mode: luminosity;
+}
+
+.sold-stamp {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.sold-stamp-text {
+    display: inline-block;
+    padding: 0.4rem 1.4rem;
+    border: 2px solid rgba(248, 113, 113, 0.95);
+    color: rgba(248, 113, 113, 0.98);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    background: rgba(15, 23, 42, 0.8);
+    transform: rotate(-15deg);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+}
