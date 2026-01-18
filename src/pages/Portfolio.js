@@ -154,11 +154,11 @@ const Portfolio = () => {
                                             </Link>
                                         </h4>
                                         <ul className="property-info">
-                                            <li><i className="fa fa-bed"></i> Bedrooms: <span>{item.bedrooms}</span></li>
-                                            <li><i className="fa fa-bath"></i> Bathrooms: <span>{item.bathrooms}</span></li>
-                                            <li><i className="fa fa-vector-square"></i> Total Floor Area: <span>{item.area}</span></li>
-                                            <li><i className="fa fa-building"></i> Floor: <span>{item.floor}</span></li>
-                                            <li><i className="fa fa-car"></i> Parking: <span>{item.parking}</span></li>
+                                            <li><i className="fa fa-bed"></i> Bedrooms: <span>{item.features?.bedrooms || '-'}</span></li>
+                                            <li><i className="fa fa-bath"></i> Bathrooms: <span>{item.features?.bathrooms || '-'}</span></li>
+                                            <li><i className="fa fa-vector-square"></i> Total Floor Area: <span>{item.features?.total_area || '-'}</span></li>
+                                            <li><i className="fa fa-building"></i> Floor: <span>{item.features?.floor || '-'}</span></li>
+                                            <li><i className="fa fa-car"></i> Parking: <span>{item.features?.parking || '-'}</span></li>
                                         </ul>
                                         <div className="property-hover-btn">
                                             <Link to={`/property-details/${item.slug}`}>View Details</Link>
