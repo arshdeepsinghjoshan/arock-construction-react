@@ -19,27 +19,34 @@ const fetchCategories = async () => {
     return res.data.data;
 };
 
+const PortfolioSkeleton = () => {
+    return (
+        <div className="row properties-box">
+            {[1, 2, 3, 4, 5, 6].map(i => (
+                <div key={i} className="col-lg-4 col-md-6 mb-30">
+                    <div className="skeleton skeleton-card" style={{ height: '300px', borderRadius: '8px' }}></div>
+                    <div className="skeleton skeleton-title mt-2" style={{ height: '20px', width: '70%' }}></div>
+                    <div className="skeleton skeleton-text mt-1" style={{ height: '15px', width: '50%' }}></div>
+                </div>
+            ))}
+        </div>
+    );
+};
+
 const Portfolio = () => {
     const [activeFilter, setActiveFilter] = useState('*');
     const [currentPage, setCurrentPage] = useState(1);
+    const [loadFailed, setLoadFailed] = useState(false);
 
     // Categories
-    const {
-        data: categories = [],
-        isLoading: categoriesLoading,
-        error: categoriesError
-    } = useQuery({
+    const { data: categories = [], isLoading: categoriesLoading, error: categoriesError } = useQuery({
         queryKey: ['categories'],
         queryFn: fetchCategories,
         staleTime: 10 * 60 * 1000,
     });
 
     // Projects
-    const {
-        data: projectsData,
-        isLoading,
-        error
-    } = useQuery({
+    const { data: projectsData, isLoading, error } = useQuery({
         queryKey: ['projects', currentPage, activeFilter],
         queryFn: fetchProjects,
         keepPreviousData: true,
@@ -47,6 +54,17 @@ const Portfolio = () => {
 
     const projects = projectsData?.data || [];
     const lastPage = projectsData?.last_page || 1;
+
+    // Set timeout for failed load
+    React.useEffect(() => {
+        if (isLoading) {
+            const timer = setTimeout(() => setLoadFailed(true), 5000);
+            return () => clearTimeout(timer);
+        } else {
+            setLoadFailed(false);
+        }
+    }, [isLoading]);
+
     return (
         <main>
             <section className="about-hero">
@@ -59,11 +77,20 @@ const Portfolio = () => {
             <div className="section properties">
                 <div className="container">
 
-                    {/* ERROR */}
-                    {error && (
-                        <div className="alert alert-danger text-center">
-                            {error}
-                        </div>
+                    {/* ERROR or No Data */}
+                    {(loadFailed || error) && (
+                        <section
+                            style={{
+                                minHeight: '50vh',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <h2 className="text-danger mb-2">Failed to load projects 😔</h2>
+                            <p>Please try again later.</p>
+                        </section>
                     )}
 
                     {/* FILTER */}
@@ -90,38 +117,42 @@ const Portfolio = () => {
                     </ul>
 
                     {/* CONTENT */}
-                    <div className="row properties-box">
-                        {isLoading  ? (
-                            <div className="col-12 text-center py-5">
-                                <h4>Loading projects...</h4>
-                            </div>
-                        ) : projects.length === 0 ? (
-                            <div className="col-12 text-center py-5">
-                                <h4>No projects found!</h4>
-                            </div>
-                        ) : (
-                             projects.map(item => (
+                    {isLoading && !loadFailed ? (
+                        <PortfolioSkeleton />
+                    ) : projects.length === 0 ? (
+                        <section
+                            style={{
+                                minHeight: '50vh',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <h2 className="text-muted mb-2">No projects found 😔</h2>
+                            <p>Try changing the filter or check back later.</p>
+                        </section>
+                    ) : (
+                        <div className="row properties-box">
+                            {projects.map(item => (
                                 <div
                                     key={item.id}
                                     className={`col-lg-4 col-md-6 align-self-center mb-30 properties-items ${item.category_id}`}
                                 >
                                     <div className="item">
-                                        <a href={`/property-details/${item.slug}`}>
+                                        <Link to={`/property-details/${item.slug}`}>
                                             <img
                                                 src={item.thumbnail_image}
                                                 alt={item.title}
                                                 loading="lazy"
                                             />
-                                        </a>
-
+                                        </Link>
                                         <span className="category">{item.title}</span>
-
                                         <h4>
-                                            <a href={`/property-details/${item.slug}`}>
+                                            <Link to={`/property-details/${item.slug}`}>
                                                 {item.title}
-                                            </a>
+                                            </Link>
                                         </h4>
-
                                         <ul className="property-info">
                                             <li><i className="fa fa-bed"></i> Bedrooms: <span>{item.bedrooms}</span></li>
                                             <li><i className="fa fa-bath"></i> Bathrooms: <span>{item.bathrooms}</span></li>
@@ -129,17 +160,16 @@ const Portfolio = () => {
                                             <li><i className="fa fa-building"></i> Floor: <span>{item.floor}</span></li>
                                             <li><i className="fa fa-car"></i> Parking: <span>{item.parking}</span></li>
                                         </ul>
-
                                         <div className="property-hover-btn">
-                                                <Link to={`/property-details/${item.slug}`}>View Details</Link>
-
+                                            <Link to={`/property-details/${item.slug}`}>View Details</Link>
                                         </div>
                                     </div>
                                 </div>
-                            ))
-                        )}
-                    </div>
-  {/* PAGINATION */}
+                            ))}
+                        </div>
+                    )}
+
+                    {/* PAGINATION */}
                     {projects.length > 0 && (
                         <div className="row">
                             <div className="col-lg-12">
@@ -147,15 +177,11 @@ const Portfolio = () => {
                                     {currentPage > 1 && (
                                         <li>
                                             <a href="#!"
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    setCurrentPage(currentPage - 1);
-                                                }}>
+                                                onClick={(e) => { e.preventDefault(); setCurrentPage(currentPage - 1); }}>
                                                 &laquo;
                                             </a>
                                         </li>
                                     )}
-
                                     {[...Array(lastPage)].map((_, index) => {
                                         const page = index + 1;
                                         return (
@@ -163,24 +189,17 @@ const Portfolio = () => {
                                                 <a
                                                     href="#!"
                                                     className={currentPage === page ? 'is_active' : ''}
-                                                    onClick={(e) => {
-                                                        e.preventDefault();
-                                                        setCurrentPage(page);
-                                                    }}
+                                                    onClick={(e) => { e.preventDefault(); setCurrentPage(page); }}
                                                 >
                                                     {page}
                                                 </a>
                                             </li>
                                         );
                                     })}
-
                                     {currentPage < lastPage && (
                                         <li>
                                             <a href="#!"
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    setCurrentPage(currentPage + 1);
-                                                }}>
+                                                onClick={(e) => { e.preventDefault(); setCurrentPage(currentPage + 1); }}>
                                                 &raquo;
                                             </a>
                                         </li>
@@ -188,7 +207,8 @@ const Portfolio = () => {
                                 </ul>
                             </div>
                         </div>
-                    )}                </div>
+                    )}
+                </div>
             </div>
         </main>
     );

@@ -1,41 +1,130 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import api from "../utils/api";
+import { useQuery } from "@tanstack/react-query";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import "./PropertyDetails.css";
+const fetchProject = async ({ queryKey }) => {
+  const [_key, slug] = queryKey;
+  const res = await api.get(`/projects/${slug}`);
+  return res.data.data;
+};
 
 const PropertyDetailsPage = () => {
   const { slug } = useParams();
-  const [project, setProject] = useState(null);
-  const [galleryImages, setGalleryImages] = useState([]);
+  const [loadFailed, setLoadFailed] = useState(false);
+
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentZoom, setCurrentZoom] = useState(1);
 
-
-  const [thumbnail, setThumbnail] = useState('');
-
-  const fetchProject = async () => {
-    try {
-      const res = await axios.get(`http://localhost:8000/api/projects/${slug}`);
-      const data = res.data.data;
-      setProject(data.project);
-      setThumbnail(data.thumbnail || ''); // main image
-      setGalleryImages(data.gallery || []); // gallery images
-    } catch (err) {
-      setProject(null);
-    }
-  };
-
-  const maxZoom = 3;
-  const minZoom = 0.5;
-
   useEffect(() => {
-    AOS.init({ duration: 1000, once: true, offset: 120, easing: "ease-in-out" });
-    fetchProject();
+    AOS.init({ duration: 1000, once: true, offset: 120 });
   }, []);
 
 
+
+  const {
+    data,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["project-details", slug],
+    queryFn: fetchProject,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  useEffect(() => {
+    if (isLoading) {
+      const timer = setTimeout(() => {
+        setLoadFailed(true);
+      }, 5000); // 5 seconds wait, adjust as needed
+
+      return () => clearTimeout(timer);
+    } else {
+      setLoadFailed(false); // data loaded successfully
+    }
+  }, [isLoading]);
+  const PropertySkeleton = () => {
+    return (
+      <section className="py-5">
+        <div className="container" style={{ minHeight: "70vh" }}>
+          <div className="row g-5">
+
+            {/* Left */}
+            <div className="col-lg-8">
+              <div className="skeleton skeleton-image mb-4"></div>
+
+              <div className="skeleton skeleton-title"></div>
+              <div className="skeleton skeleton-text"></div>
+              <div className="skeleton skeleton-text"></div>
+              <div className="skeleton skeleton-text"></div>
+
+              <div className="row g-3 mt-4">
+                {[1, 2, 3, 4].map(i => (
+                  <div className="col-md-3 col-6" key={i}>
+                    <div className="skeleton skeleton-card"></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right */}
+            <div className="col-lg-4">
+              <div className="skeleton skeleton-title"></div>
+              <div className="skeleton skeleton-text"></div>
+              <div className="skeleton skeleton-text"></div>
+              <div className="skeleton skeleton-card mt-4"></div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+    );
+  };
+  // 🔄 Loading UI
+  if (isLoading && !loadFailed) {
+    return <PropertySkeleton />;
+  }
+
+  // Agar data fail ya timeout hua
+  if (loadFailed || error || !data?.project) {
+    return (
+      <section
+        className="py-5"
+        style={{
+          minHeight: "70vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column",
+        }}
+      >
+        <h2 className="text-danger mb-2">Failed to load property details 😔</h2>
+        <p>Please try again later or contact support.</p>
+      </section>
+    );
+  }
+
+
+
+
+  // ❌ Error UI
+
+
+  const project = data?.project ?? {};
+
+  const galleryImages = Array.isArray(data?.gallery) ? data.gallery : [];
+  const thumbnail = data?.thumbnail ?? "";
+  const features = project?.features ?? {};
+  const amenities = Array.isArray(project?.amenities) ? project.amenities : [];
+  const quickInfo = project?.quick_info ?? {};
+
+  const currentImage = galleryImages[currentIndex] || {};
+
+  const maxZoom = 3;
+  const minZoom = 0.5;
 
   const openLightbox = (index) => {
     setCurrentIndex(index);
@@ -43,21 +132,14 @@ const PropertyDetailsPage = () => {
     setLightboxOpen(true);
   };
   const closeLightbox = () => setLightboxOpen(false);
-  const prevImage = () => setCurrentIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
-  const nextImage = () => setCurrentIndex((prev) => (prev + 1) % galleryImages.length);
+  const prevImage = () =>
+    setCurrentIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
+  const nextImage = () =>
+    setCurrentIndex((prev) => (prev + 1) % galleryImages.length);
   const zoomIn = () => setCurrentZoom((z) => (z < maxZoom ? z + 0.5 : z));
   const zoomOut = () => setCurrentZoom((z) => (z > minZoom ? z - 0.5 : z));
   const resetZoom = () => setCurrentZoom(1);
 
-  if (!project) {
-    return (
-      <div className="container py-5 text-center">
-        <h2 className="text-muted">Property not found</h2>
-      </div>
-    );
-  }
-
-  const currentImage = galleryImages[currentIndex] || {};
 
   return (
     <>
@@ -110,11 +192,21 @@ const PropertyDetailsPage = () => {
               <div className="mt-5">
                 <h3 className="section-title-custom">Description</h3>
                 {/* <p className="text-muted" style={{ lineHeight: 1.9 }}>{project.content}</p> */}
-                <div
+                {/* <div
                   className="text-muted"
                   style={{ lineHeight: 1.9 }}
                   dangerouslySetInnerHTML={{ __html: project.content }}
-                ></div>
+                ></div> */}
+                {project.content ? (
+                  <div
+                    className="text-muted"
+                    style={{ lineHeight: 1.9 }}
+                    dangerouslySetInnerHTML={{ __html: project.content }}
+                  />
+                ) : (
+                  <p className="text-muted">Description not available</p>
+                )}
+
               </div>
 
               {/* Property Details Grid */}
@@ -126,7 +218,10 @@ const PropertyDetailsPage = () => {
                         <div className="info-card-icon">
                           <i className="bi bi-house-door"></i>
                         </div>
-                        <h5>{project.features.total_area}</h5>
+                        {/* <h5>{project.features.total_area}</h5> */}
+
+                        <h5>{features.total_area ?? "-"}</h5>
+
                         <span>Total Area</span>
                       </div>
                     </div>
@@ -164,43 +259,45 @@ const PropertyDetailsPage = () => {
                 )}
               </div>
 
-              {/* Amenities */}
-<div className="mt-5">
-  <h3 className="section-title-custom">Amenities</h3>
-  <div className="row g-3">
-    {project.amenities && project.amenities.length > 0 ? (
-      project.amenities.map((amenity, index) => {
-        // Map your amenity names to icons
-        const iconMap = {
-          "High-Speed Internet": "bi-wifi",
-          "Central Air Conditioning": "bi-snow",
-          "Central Heating": "bi-fire",
-          "24/7 Security System": "bi-shield-check",
-          "Swimming Pool": "bi-water",
-          "Private Garden": "bi-tree",
-          "Smart Home System": "bi-tv",
-          "Storage Room": "bi-box-seam",
-        };
+                {/* Amenities */}
+                <div className="mt-5">
+                  <h3 className="section-title-custom">Amenities</h3>
+                  <div className="row g-3">
+                    {(Array.isArray(project?.amenities) && project.amenities.length > 0) ? (
+                      project.amenities.map((amenity, index) => {
+                        const iconMap = {
+                          "High-Speed Internet": "bi-wifi",
+                          "Central Air Conditioning": "bi-snow",
+                          "Central Heating": "bi-fire",
+                          "24/7 Security System": "bi-shield-check",
+                          "Swimming Pool": "bi-water",
+                          "Private Garden": "bi-tree",
+                          "Smart Home System": "bi-tv",
+                          "Storage Room": "bi-box-seam",
+                        };
 
-        const iconClass = iconMap[amenity] || "bi-star"; // fallback icon
+                        const iconClass = iconMap[amenity] || "bi-star";
 
-        return (
-          <div className="col-md-6" key={index}>
-            <div className="amenity-item">
-              <div className="amenity-icon">
-                <i className={`bi ${iconClass}`}></i>
+                        return (
+                          <div className="col-md-6" key={index}>
+                            <div className="amenity-item">
+                              <div className="amenity-icon">
+                                <i className={`bi ${iconClass}`}></i>
+                              </div>
+                              <span>{amenity}</span>
+                            </div>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div className="col-12">
+                        <p className="text-muted">No amenities available.</p>
+                      </div>
+                    )}
+                  </div>
+
+                </div>
               </div>
-              <span>{amenity}</span>
-            </div>
-          </div>
-        );
-      })
-    ) : (
-      <p>No amenities available.</p>
-    )}
-  </div>
-</div>
-</div>
             </div>
 
             {/* Sidebar remains the same */}
@@ -209,101 +306,110 @@ const PropertyDetailsPage = () => {
                 <span className="badge bg-primary-custom mb-3">Featured Property</span>
                 <h1>{project.title}</h1>
                 <div className="property-location"><i className="bi bi-geo-alt-fill"></i> <span>{project.address ? project.address : "Address not available"}</span></div>
-               <div className="property-price">
-  ${Number(project.price).toLocaleString()} <span>/ Starting from</span>
-</div>
-       <div className="agent-card mb-4">
-                <div className="agent-avatar">
-                  <img
-                    src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&q=80"
-                    alt="Agent"
-                  />
+                <div className="property-price">
+                  ${Number(project.price).toLocaleString()} <span>/ Starting from</span>
                 </div>
-                <h4 className="agent-name">Michael Johnson</h4>
-                <p className="agent-role">Senior Property Consultant</p>
-                <div className="agent-contact">
-                  <a href="tel:+1234567890">
-                    <i className="bi bi-telephone-fill text-primary-custom"></i> +1 (234)
-                    567-8900
-                  </a>
-                  <a href="mailto:agent@company.com">
-                    <i className="bi bi-envelope-fill text-primary-custom"></i>
-                    agent@company.com
-                  </a>
-                </div>
-                <button className="btn-submit mt-4">
-                  <i className="bi bi-telephone-fill me-2"></i>Request Call Back
-                </button>
-              </div>
-
-              {/* Contact Form */}
-              <div className="contact-form-card">
-                <h4 className="fw-bold mb-4">Schedule a Visit</h4>
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    // Handle your form submit logic here
-                  }}
-                >
-                  <div className="mb-3">
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Your Name"
-                      required
+                <div className="agent-card mb-4">
+                  <div className="agent-avatar">
+                    <img
+                      src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&q=80"
+                      alt="Agent"
                     />
                   </div>
-                  <div className="mb-3">
-                    <input
-                      type="email"
-                      className="form-control"
-                      placeholder="Your Email"
-                      required
-                    />
+                  <h4 className="agent-name">Michael Johnson</h4>
+                  <p className="agent-role">Senior Property Consultant</p>
+                  <div className="agent-contact">
+                    <a href="tel:+1234567890">
+                      <i className="bi bi-telephone-fill text-primary-custom"></i> +1 (234)
+                      567-8900
+                    </a>
+                    <a href="mailto:agent@company.com">
+                      <i className="bi bi-envelope-fill text-primary-custom"></i>
+                      agent@company.com
+                    </a>
                   </div>
-                  <div className="mb-3">
-                    <input
-                      type="tel"
-                      className="form-control"
-                      placeholder="Your Phone"
-                      required
-                    />
-                  </div>
-                  <div className="mb-3">
-                    <select className="form-control" defaultValue="">
-                      <option value="">Select Date</option>
-                      <option value="2026-01-20">Jan 20, 2026</option>
-                      <option value="2026-01-21">Jan 21, 2026</option>
-                      <option value="2026-01-22">Jan 22, 2026</option>
-                      <option value="2026-01-23">Jan 23, 2026</option>
-                      <option value="2026-01-24">Jan 24, 2026</option>
-                    </select>
-                  </div>
-                  <div className="mb-3">
-                    <textarea
-                      className="form-control"
-                      rows="4"
-                      placeholder="Your Message"
-                    ></textarea>
-                  </div>
-                  <button type="submit" className="btn-submit">
-                    <i className="bi bi-calendar-check me-2"></i>Book Appointment
+                  <button className="btn-submit mt-4">
+                    <i className="bi bi-telephone-fill me-2"></i>Request Call Back
                   </button>
-                </form>
-              </div>
+                </div>
 
-             
-             
-             <div className="info-card mt-4">
-  <h5 className="fw-bold mb-3">Quick Info</h5>
-  {project && Object.entries(project.quick_info).map(([key, value]) => (
-    <div className="d-flex justify-content-between py-2 border-bottom" key={key}>
-      <span className="text-muted">{key}</span>
-      <span className="fw-bold">{value}</span>
-    </div>
-  ))}
-</div>
- </div>
+                {/* Contact Form */}
+                <div className="contact-form-card">
+                  <h4 className="fw-bold mb-4">Schedule a Visit</h4>
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      // Handle your form submit logic here
+                    }}
+                  >
+                    <div className="mb-3">
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Your Name"
+                        required
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <input
+                        type="email"
+                        className="form-control"
+                        placeholder="Your Email"
+                        required
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <input
+                        type="tel"
+                        className="form-control"
+                        placeholder="Your Phone"
+                        required
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <select className="form-control" defaultValue="">
+                        <option value="">Select Date</option>
+                        <option value="2026-01-20">Jan 20, 2026</option>
+                        <option value="2026-01-21">Jan 21, 2026</option>
+                        <option value="2026-01-22">Jan 22, 2026</option>
+                        <option value="2026-01-23">Jan 23, 2026</option>
+                        <option value="2026-01-24">Jan 24, 2026</option>
+                      </select>
+                    </div>
+                    <div className="mb-3">
+                      <textarea
+                        className="form-control"
+                        rows="4"
+                        placeholder="Your Message"
+                      ></textarea>
+                    </div>
+                    <button type="submit" className="btn-submit">
+                      <i className="bi bi-calendar-check me-2"></i>Book Appointment
+                    </button>
+                  </form>
+                </div>
+
+
+
+                <div className="info-card mt-4">
+                  <h5 className="fw-bold mb-3">Quick Info</h5>
+
+                  {(project?.quick_info && typeof project.quick_info === "object" && Object.keys(project.quick_info).length > 0) ? (
+                    Object.entries(project.quick_info).map(([key, value]) => (
+                      <div
+                        className="d-flex justify-content-between py-2 border-bottom"
+                        key={key}
+                      >
+                        <span className="text-muted">{key}</span>
+                        <span className="fw-bold">{value}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-muted mb-0">No information available.</p>
+                  )}
+                </div>
+
+              </div>
             </div>
 
           </div>
