@@ -63,8 +63,8 @@ const fetchCategories = async () => {
 
 const fetchProjects = async ({ queryKey }) => {
     const [_key, page, categoryId] = queryKey;
-    
-    let url = `/projects?state_id=1&page=${page}&per_page=1`;
+
+    let url = `/projects?state_id=3&page=${page}&per_page=1`;
     if (categoryId) {
         url += `&category_id=${categoryId}`; // Change to category_key if needed
     }
@@ -157,15 +157,23 @@ const BestDeal = () => {
                                                     </div>
                                                 </div>
                                                 <div className="col-lg-6">
-                                                    <img 
-                                                        src={project.thumbnail_image || '/assets/images/default-deal.jpg'} 
-                                                        alt={project.title} 
+                                                    <img
+                                                        src={project.thumbnail_image || '/assets/images/default-deal.jpg'}
+                                                        alt={project.title}
                                                         style={{ width: '100%', height: 'auto', borderRadius: '8px' }}
                                                     />
                                                 </div>
                                                 <div className="col-lg-3">
                                                     <h4>{project.title}</h4>
-                                                    <p>{project.short_description || 'No description available.'}</p>
+                                                    {project.content ? (
+                                                        <p className="text-muted" style={{ lineHeight: 1.9 }}>
+                                                            {project.content.replace(/<[^>]*>/g, '').slice(0, 150)}
+                                                            {project.content.replace(/<[^>]*>/g, '').length > 150 && '...'}
+                                                        </p>
+                                                    ) : (
+                                                        <p className="text-muted">Description not available</p>
+                                                    )}
+
                                                     <br />
                                                     <div className="icon-button">
                                                         <Link to={`/property-details/${project.slug}`}>

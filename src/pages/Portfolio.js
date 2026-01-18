@@ -7,7 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 const fetchProjects = async ({ queryKey }) => {
     const [_key, page, filter] = queryKey;
 
-    let url = `/projects?sate_id=1&page=${page}`;
+    let url = `/projects?state_id=1&page=${page}`;
     if (filter !== '*') url += `&category_id=${filter}`;
 
     const res = await api.get(url);
@@ -21,7 +21,7 @@ const fetchCategories = async () => {
 
 const PortfolioSkeleton = () => {
     return (
-        <div className="row properties-box">
+        <div className="row properties-box g-4">
             {[1, 2, 3, 4, 5, 6].map(i => (
                 <div key={i} className="col-lg-4 col-md-6 mb-30">
                     <div className="skeleton skeleton-card" style={{ height: '300px', borderRadius: '8px' }}></div>
@@ -47,7 +47,7 @@ const Portfolio = () => {
 
     // Projects
     const { data: projectsData, isLoading, error } = useQuery({
-        queryKey: ['projects', currentPage, activeFilter],
+        queryKey: ['portfolio', currentPage, activeFilter],
         queryFn: fetchProjects,
         keepPreviousData: true,
     });

@@ -29,7 +29,7 @@ const fetchProjects = async ({ queryKey }) => {
 // 3. Skeleton Loader Component
 const PortfolioSkeleton = () => {
     return (
-        <div className="row properties-box">
+        <div className="row properties-box g-4">
             {[1, 2, 3, 4, 5, 6].map(i => (
                 <div key={i} className="col-lg-4 col-md-6 mb-30">
                     <div className="skeleton skeleton-card" style={{ height: '300px', borderRadius: '8px' }}></div>
@@ -154,7 +154,7 @@ const CurrentOffer = () => {
                             <h3 className="text-muted">No current offers found in this category.</h3>
                         </div>
                     ) : (
-                        <div className="row properties-box">
+                        <div className="row properties-box g-4">
                             {projects.map((item) => (
                                 <div
                                     key={item.id}

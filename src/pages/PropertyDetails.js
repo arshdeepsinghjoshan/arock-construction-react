@@ -116,6 +116,8 @@ const PropertyDetailsPage = () => {
   const project = data?.project ?? {};
 
   const galleryImages = Array.isArray(data?.gallery) ? data.gallery : [];
+  console.log({galleryImages});
+  
   const thumbnail = data?.thumbnail ?? "";
   const features = project?.features ?? {};
   const amenities = Array.isArray(project?.amenities) ? project.amenities : [];
