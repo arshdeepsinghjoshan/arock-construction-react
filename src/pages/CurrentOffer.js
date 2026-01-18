@@ -27,12 +27,14 @@ const fetchProjects = async ({ queryKey }) => {
 };
 
 // 3. Skeleton Loader Component
-const OfferSkeleton = () => {
+const PortfolioSkeleton = () => {
     return (
         <div className="row properties-box">
             {[1, 2, 3, 4, 5, 6].map(i => (
-                <div key={i} className="col-lg-4 col-md-6 align-self-center mb-30">
-                    <div className="skeleton skeleton-card" style={{ height: '400px', borderRadius: '8px' }}></div>
+                <div key={i} className="col-lg-4 col-md-6 mb-30">
+                    <div className="skeleton skeleton-card" style={{ height: '300px', borderRadius: '8px' }}></div>
+                    <div className="skeleton skeleton-title mt-2" style={{ height: '20px', width: '70%' }}></div>
+                    <div className="skeleton skeleton-text mt-1" style={{ height: '15px', width: '50%' }}></div>
                 </div>
             ))}
         </div>
@@ -146,7 +148,7 @@ const CurrentOffer = () => {
                     
                     {/* Content Grid */}
                     {isLoading && !loadFailed ? (
-                        <OfferSkeleton />
+                        <PortfolioSkeleton />
                     ) : projects.length === 0 ? (
                         <div className="text-center py-5">
                             <h3 className="text-muted">No current offers found in this category.</h3>

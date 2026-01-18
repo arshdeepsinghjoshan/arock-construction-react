@@ -306,9 +306,13 @@ const PropertyDetailsPage = () => {
                 <span className="badge bg-primary-custom mb-3">Featured Property</span>
                 <h1>{project.title}</h1>
                 <div className="property-location"><i className="bi bi-geo-alt-fill"></i> <span>{project.address ? project.address : "Address not available"}</span></div>
-                <div className="property-price">
-                  ${Number(project.price).toLocaleString()} <span>/ Starting from</span>
-                </div>
+
+                {project.state_id === 3 && (
+                  <div className="property-price">
+                    ${Number(project.price).toLocaleString()} <span>/ Starting from</span>
+                  </div>
+                )}
+
                 <div className="agent-card mb-4">
                   <div className="agent-avatar">
                     <img
@@ -391,23 +395,34 @@ const PropertyDetailsPage = () => {
 
 
 
-                <div className="info-card mt-4">
-                  <h5 className="fw-bold mb-3">Quick Info</h5>
+                {project?.state_id === 3 && (
+                  <div className="info-card mt-4">
+                    <h5 className="fw-bold mb-3">Quick Info</h5>
 
-                  {(project?.quick_info && typeof project.quick_info === "object" && Object.keys(project.quick_info).length > 0) ? (
-                    Object.entries(project.quick_info).map(([key, value]) => (
-                      <div
-                        className="d-flex justify-content-between py-2 border-bottom"
-                        key={key}
-                      >
-                        <span className="text-muted">{key}</span>
-                        <span className="fw-bold">{value}</span>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-muted mb-0">No information available.</p>
-                  )}
-                </div>
+                    {(project?.quick_info &&
+                      typeof project.quick_info === "object" &&
+                      Object.keys(project.quick_info).length > 0) ? (
+                      Object.entries(project.quick_info).map(([key, value]) => (
+                        <div
+                          className="d-flex justify-content-between py-2 border-bottom"
+                          key={key}
+                        >
+                          <span className="text-muted">{key}</span>
+                          <span
+                            className={`fw-bold ${value === "Available" ? "text-success" : ""
+                              }`}
+                          >
+                            {value}
+                          </span>
+
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-muted mb-0">No information available.</p>
+                    )}
+                  </div>
+                )}
+
 
               </div>
             </div>
