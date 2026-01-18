@@ -1,60 +1,54 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
+import api from '../utils/api';
 import './Portfolio.css';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+
+const fetchProjects = async ({ queryKey }) => {
+    const [_key, page, filter] = queryKey;
+
+    let url = `/projects?page=${page}`;
+    if (filter !== '*') url += `&category_id=${filter}`;
+
+    const res = await api.get(url);
+    return res.data.data;
+};
+
+const fetchCategories = async () => {
+    const res = await api.get('/project-categories');
+    return res.data.data;
+};
 
 const Portfolio = () => {
-    const [projects, setProjects] = useState([]);
     const [activeFilter, setActiveFilter] = useState('*');
     const [currentPage, setCurrentPage] = useState(1);
-    const [lastPage, setLastPage] = useState(1);
-    const [categories, setCategories] = useState([]);
-    const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        fetchProjects(1, activeFilter);
-        fetchCategories();
-    }, []);
+    // Categories
+    const {
+        data: categories = [],
+        isLoading: categoriesLoading,
+        error: categoriesError
+    } = useQuery({
+        queryKey: ['categories'],
+        queryFn: fetchCategories,
+        staleTime: 10 * 60 * 1000,
+    });
 
-    const fetchCategories = async () => {
-        const res = await axios.get('http://localhost:8000/api/project-categories');
-        setCategories(res.data.data);
-    };
+    // Projects
+    const {
+        data: projectsData,
+        isLoading,
+        error
+    } = useQuery({
+        queryKey: ['projects', currentPage, activeFilter],
+        queryFn: fetchProjects,
+        keepPreviousData: true,
+    });
 
-    const fetchProjects = async (page = 1, filter = '*') => {
-        setLoading(true);
-        let url = `http://localhost:8000/api/projects?page=${page}`;
-        if (filter !== '*') {
-            url += `&category_id=${filter}`;
-        }
-
-        try {
-            const res = await axios.get(url);
-            setProjects(res.data.data.data);
-            setCurrentPage(res.data.data.current_page);
-            setLastPage(res.data.data.last_page);
-        } catch (err) {
-            console.error('Error fetching projects:', err);
-            setProjects([]);
-            setCurrentPage(1);
-            setLastPage(1);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const changeFilter = (filter) => {
-        setActiveFilter(filter);
-        fetchProjects(1, filter);
-    };
-
-    const changePage = (page) => {
-        fetchProjects(page, activeFilter);
-    };
-
+    const projects = projectsData?.data || [];
+    const lastPage = projectsData?.last_page || 1;
     return (
         <main>
-            {/* HERO */}
             <section className="about-hero">
                 <img src="/assets/images/w1.JPG" alt="Portfolio" className="hero-bg" />
                 <div className="container text-center text-white">
@@ -62,16 +56,22 @@ const Portfolio = () => {
                 </div>
             </section>
 
-            {/* PROPERTIES */}
             <div className="section properties">
                 <div className="container">
+
+                    {/* ERROR */}
+                    {error && (
+                        <div className="alert alert-danger text-center">
+                            {error}
+                        </div>
+                    )}
 
                     {/* FILTER */}
                     <ul className="properties-filter">
                         <li>
                             <a
                                 className={activeFilter === '*' ? 'is_active' : ''}
-                                onClick={() => changeFilter('*')}
+                                onClick={() => setActiveFilter('*')}
                             >
                                 Show All
                             </a>
@@ -81,7 +81,7 @@ const Portfolio = () => {
                             <li key={cat.id}>
                                 <a
                                     className={activeFilter === cat.id ? 'is_active' : ''}
-                                    onClick={() => changeFilter(cat.id)}
+                                    onClick={() => setActiveFilter(cat.id)}
                                 >
                                     {cat.name}
                                 </a>
@@ -89,9 +89,9 @@ const Portfolio = () => {
                         ))}
                     </ul>
 
-                    {/* CARDS */}
+                    {/* CONTENT */}
                     <div className="row properties-box">
-                        {loading ? (
+                        {isLoading  ? (
                             <div className="col-12 text-center py-5">
                                 <h4>Loading projects...</h4>
                             </div>
@@ -100,7 +100,7 @@ const Portfolio = () => {
                                 <h4>No projects found!</h4>
                             </div>
                         ) : (
-                            projects.map(item => (
+                             projects.map(item => (
                                 <div
                                     key={item.id}
                                     className={`col-lg-4 col-md-6 align-self-center mb-30 properties-items ${item.category_id}`}
@@ -139,8 +139,7 @@ const Portfolio = () => {
                             ))
                         )}
                     </div>
-
-                    {/* PAGINATION */}
+  {/* PAGINATION */}
                     {projects.length > 0 && (
                         <div className="row">
                             <div className="col-lg-12">
@@ -150,7 +149,7 @@ const Portfolio = () => {
                                             <a href="#!"
                                                 onClick={(e) => {
                                                     e.preventDefault();
-                                                    changePage(currentPage - 1);
+                                                    setCurrentPage(currentPage - 1);
                                                 }}>
                                                 &laquo;
                                             </a>
@@ -166,7 +165,7 @@ const Portfolio = () => {
                                                     className={currentPage === page ? 'is_active' : ''}
                                                     onClick={(e) => {
                                                         e.preventDefault();
-                                                        changePage(page);
+                                                        setCurrentPage(page);
                                                     }}
                                                 >
                                                     {page}
@@ -180,7 +179,7 @@ const Portfolio = () => {
                                             <a href="#!"
                                                 onClick={(e) => {
                                                     e.preventDefault();
-                                                    changePage(currentPage + 1);
+                                                    setCurrentPage(currentPage + 1);
                                                 }}>
                                                 &raquo;
                                             </a>
@@ -189,9 +188,7 @@ const Portfolio = () => {
                                 </ul>
                             </div>
                         </div>
-                    )}
-
-                </div>
+                    )}                </div>
             </div>
         </main>
     );
