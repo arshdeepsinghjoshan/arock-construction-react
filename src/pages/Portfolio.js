@@ -7,7 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 const fetchProjects = async ({ queryKey }) => {
     const [_key, page, filter] = queryKey;
 
-    let url = `/projects?page=${page}`;
+    let url = `/projects?sate_id=1&page=${page}`;
     if (filter !== '*') url += `&category_id=${filter}`;
 
     const res = await api.get(url);
