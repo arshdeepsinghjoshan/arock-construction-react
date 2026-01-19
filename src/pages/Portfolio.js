@@ -68,9 +68,15 @@ const Portfolio = () => {
     return (
         <main>
             <section className="about-hero">
-                <img src="/assets/images/w1.JPG" alt="Portfolio" className="hero-bg" />
+                <img src="/assets/images/Portfolio.JPG" alt="Portfolio" className="hero-bg" />
                 <div className="container text-center text-white">
-                    <h1 className="fw-bold">Projects Arock Construction</h1>
+                    <h1 className="fw-bold mb-3 display-5 display-md-4 display-lg-3" data-aos="fade-up">Portfolio</h1>
+                    <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="300">
+                        <ol className="breadcrumb justify-content-center">
+                            <li className="breadcrumb-item"><a href="/" className="text-white text-decoration-none">Home</a></li>
+                            <li className="breadcrumb-item active text-white-50" aria-current="page">Portfolio</li>
+                        </ol>
+                    </nav>
                 </div>
             </section>
 
@@ -140,14 +146,24 @@ const Portfolio = () => {
                                     className={`col-lg-4 col-md-6 align-self-center mb-30 properties-items ${item.category_id}`}
                                 >
                                     <div className="item">
-                                        <Link to={`/property-details/${item.slug}`}>
+                                        <div
+                                            className="img-container position-relative"
+                                            style={{ height: '250px', width: '100%', overflow: 'hidden' }}
+                                        >
                                             <img
                                                 src={item.thumbnail_image}
                                                 alt={item.title}
                                                 loading="lazy"
+                                                style={{
+                                                    width: '100%',
+                                                    height: '100%',
+                                                    objectFit: 'cover', // makes image fill container
+                                                    objectPosition: 'center', // optional: center the image
+                                                }}
                                             />
-                                        </Link>
-                                        <span className="category">{item.title}</span>
+                                        </div>
+
+                                        <span className="category">{item?.category?.name}</span>
                                         <h4>
                                             <Link to={`/property-details/${item.slug}`}>
                                                 {item.title}
@@ -158,7 +174,7 @@ const Portfolio = () => {
                                             <li><i className="fa fa-bath"></i> Bathrooms: <span>{item.features?.bathrooms || '-'}</span></li>
                                             <li><i className="fa fa-vector-square"></i> Total Floor Area: <span>{item.features?.total_area || '-'}</span></li>
                                             <li><i className="fa fa-building"></i> Floor: <span>{item.features?.floor || '-'}</span></li>
-                                            <li><i className="fa fa-car"></i> Parking: <span>{item.features?.parking || '-'}</span></li>
+                                            <li><i className="fa fa-car"></i> Garages: <span>{item.features?.garages || '-'}</span></li>
                                         </ul>
                                         <div className="property-hover-btn">
                                             <Link to={`/property-details/${item.slug}`}>View Details</Link>

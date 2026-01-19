@@ -40,7 +40,7 @@ const Header = () => {
           <div className="row">
             <div className="col-lg-8 col-md-8">
               <ul className="info">
-                <li><i className="fa fa-envelope"></i> sales@arockconstruction.com.au</li>
+                <li><i className="fa fa-envelope"></i><a href="mailto:sales@arockconstruction.com.au"className="text-decoration-none text-reset"> sales@arockconstruction.com.au</a></li>
                 <li><i className="fa fa-map"></i> Unit 1/24 Technology Drive Augustine Heights Queensland 4300</li>
               </ul>
             </div>
@@ -50,6 +50,7 @@ const Header = () => {
                 {/* <li><a href="https://twitter.com" target="_blank" rel="noopener noreferrer"><i className="fab fa-twitter"></i></a></li> */}
                 {/* <li><a href="https://linkedin.com" target="_blank" rel="noopener noreferrer"><i className="fab fa-linkedin"></i></a></li> */}
                 <li><a href="https://www.instagram.com/arockconstruction_au?igsh=cW5ncDIwa2hzMnBu&utm_source=qr" target="_blank" rel="noopener noreferrer"><i className="fab fa-instagram"></i></a></li>
+                <li><a href="https://www.tiktok.com/@arock.construction?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer"><i className="fab fa-tiktok"></i></a></li>
               </ul>
             </div>
           </div>
@@ -93,7 +94,7 @@ const Header = () => {
 
                     <li>
                     <Link to="/current-offer" className={isActive('/current-offer')} onClick={closeMenu}>
-                      HOUSE AND LAND PACKAGES
+                      HOUSE & LAND PACKAGES
                     </Link>
                   </li>
                   {/* <li>

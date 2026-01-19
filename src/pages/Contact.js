@@ -75,7 +75,7 @@ const Contact = () => {
                         <div className="glass-card" data-aos="zoom-in">
                             <div className="row g-0">
                                 <div className="col-lg-5 info-side">
-                                    <span className="feature-tag">Trusted Developers</span>
+                                    {/* <span className="feature-tag">Trusted Developers</span> */}
                                     <h2 className="fw-bold mb-4">Let's Build Something Great Together</h2>
                                     <p className="mb-5 opacity-75">Fill out the form and our property consultant will get back to you within 24 hours to discuss your requirements and schedule a site visit.</p>
 

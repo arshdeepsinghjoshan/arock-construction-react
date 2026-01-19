@@ -115,9 +115,11 @@ const PropertyDetailsPage = () => {
 
   const project = data?.project ?? {};
 
-  const galleryImages = Array.isArray(data?.gallery) ? data.gallery : [];
-  console.log({galleryImages});
-  
+  // const galleryImages = Array.isArray(data?.gallery) ? data.gallery : [];
+  const galleryImages = data?.gallery ? Object.values(data.gallery) : [];
+
+  console.log({ galleryImages });
+
   const thumbnail = data?.thumbnail ?? "";
   const features = project?.features ?? {};
   const amenities = Array.isArray(project?.amenities) ? project.amenities : [];
@@ -147,6 +149,11 @@ const PropertyDetailsPage = () => {
     <>
       {/* HERO — same design */}
       <section className="about-hero">
+        <img
+          src="/assets/images/viewdetails.JPG"
+          alt="About Arock Construction"
+          className="hero-bg"
+        />
         <div className="container text-center text-white">
           <h1 className="fw-bold mb-3 display-5" data-aos="fade-up">{project.title}</h1>
           <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="300">
@@ -172,7 +179,10 @@ const PropertyDetailsPage = () => {
                     src={thumbnail || galleryImages[0]?.src} // fallback to first gallery if no thumbnail
                     alt={project.title}
                   />
+
+                  {project.state_id === 3 && (
                   <span className="gallery-badge">{project.status || "For Sale"}</span>
+                  )}
                   <div className="gallery-photos-count">
                     <i className="bi bi-images"></i>
                     <span>{galleryImages.length} Photos</span>
@@ -224,7 +234,7 @@ const PropertyDetailsPage = () => {
 
                         <h5>{features.total_area ?? "-"}</h5>
 
-                        <span>Total Area</span>
+                        <span>Total Floor Area</span>
                       </div>
                     </div>
 
@@ -283,9 +293,7 @@ const PropertyDetailsPage = () => {
                         return (
                           <div className="col-md-6" key={index}>
                             <div className="amenity-item">
-                              <div className="amenity-icon">
-                                <i className={`bi ${iconClass}`}></i>
-                              </div>
+                              <div className="amenity-dot"></div>
                               <span>{amenity}</span>
                             </div>
                           </div>
@@ -307,7 +315,7 @@ const PropertyDetailsPage = () => {
               <div className="property-header mb-4">
                 <span className="badge bg-primary-custom mb-3">Featured Property</span>
                 <h1>{project.title}</h1>
-                <div className="property-location"><i className="bi bi-geo-alt-fill"></i> <span>{project.address ? project.address : "Address not available"}</span></div>
+                {/* <div className="property-location"><i className="bi bi-geo-alt-fill"></i> <span>{project.address ? project.address : "Address not available"}</span></div> */}
 
                 {project.state_id === 3 && (
                   <div className="property-price">
@@ -317,13 +325,11 @@ const PropertyDetailsPage = () => {
 
                 <div className="agent-card mb-4">
                   <div className="agent-avatar">
-                    <img
-                      src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&q=80"
-                      alt="Agent"
-                    />
+                    <i className="bi bi-person-circle boy-avatar"></i>
                   </div>
+
                   <h4 className="agent-name">Michael Johnson</h4>
-                  <p className="agent-role">Senior Property Consultant</p>
+                  <p className="agent-role text-center">Senior Property Consultant</p>
                   <div className="agent-contact">
                     <a href="tel:+1234567890">
                       <i className="bi bi-telephone-fill text-primary-custom"></i> +1 (234)
@@ -334,8 +340,12 @@ const PropertyDetailsPage = () => {
                       agent@company.com
                     </a>
                   </div>
-                  <button className="btn-submit mt-4">
-                    <i className="bi bi-telephone-fill me-2"></i>Request Call Back
+                  <button
+                    className="btn-submit mt-4"
+                    onClick={() => window.location.href = "tel:+1234567890"}
+                  >
+                    <i className="bi bi-telephone-fill me-2"></i>
+                    Request Call Back
                   </button>
                 </div>
 

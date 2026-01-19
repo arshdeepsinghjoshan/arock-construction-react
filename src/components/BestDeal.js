@@ -148,11 +148,11 @@ const BestDeal = () => {
                                                 <div className="col-lg-3">
                                                     <div className="info-table">
                                                         <ul>
-                                                            <li>Total Flat Space <span>{project.features?.total_area || '-'}</span></li>
-                                                            <li>Floor number <span>{project.features?.floor || '-'}</span></li>
-                                                            <li>Number of rooms <span>{project.features?.bedrooms || '-'}</span></li>
-                                                            <li>Parking Available <span>{project.features?.parking || 'No'}</span></li>
-                                                            <li>Payment Process <span>Bank</span></li>
+                                                            <li>Total Floor Area <span>{project.features?.total_area || '-'}</span></li>
+                                                            <li>Floor <span>{project.features?.floor || '-'}</span></li>
+                                                            <li>Bedrooms <span>{project.features?.bedrooms || '-'}</span></li>
+                                                            <li>Garages <span>{project.features?.garages || '-'}</span></li>
+                                                            <li>Bathrooms <span>{project.features?.bathrooms || '-'}</span></li>
                                                         </ul>
                                                     </div>
                                                 </div>
@@ -176,7 +176,7 @@ const BestDeal = () => {
 
                                                     <br />
                                                     <div className="icon-button">
-                                                        <Link to={`/property-details/${project.slug}`}>
+                                                        <Link to={`/contact`}>
                                                             <i className="fa fa-calendar"></i> Schedule a visit
                                                         </Link>
                                                     </div>

@@ -6,6 +6,7 @@ import AOS from 'aos';
 import Preloader from './components/Preloader';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import ScrollToTop from './pages/ScrollToTop';
 
 // Pages (LAZY LOAD 🔥)
 const Home = lazy(() => import('./pages/Home'));
@@ -56,7 +57,9 @@ function App() {
         <Header />
 
         {/* 👇 Lazy loading fallback */}
+         <ScrollToTop />
         <Suspense fallback={<div className="page-loader">Loading...</div>}>
+           
           <Routes>
             <Route path="/" element={<Home animateContent={animateContent} />} />
             <Route path="/about" element={<About />} />

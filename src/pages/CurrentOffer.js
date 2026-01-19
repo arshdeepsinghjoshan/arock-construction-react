@@ -91,20 +91,22 @@ const CurrentOffer = () => {
             {/* Hero Section */}
             <section className="about-hero">
                 <img
-                    src="/assets/images/w1.JPG"
+                    src="/assets/images/HouseLand.jpg"
                     alt="Current Offers Arock Construction"
                     className="hero-bg"
                 />
                 <div className="container text-center text-white">
                     <h1 className="fw-bold mb-3 display-5" data-aos="fade-up">
-                        Current Offers - Arock Construction
+                        House & Land Packages
                     </h1>
                     <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="300">
                         <ol className="breadcrumb justify-content-center">
                             <li className="breadcrumb-item">
                                 <Link to="/" className="text-white text-decoration-none">Home</Link>
                             </li>
-                            <li className="breadcrumb-item active text-white-50" aria-current="page">Current Offers</li>
+                            <li className="breadcrumb-item active text-white-50" aria-current="page">
+                                House & Land Packages
+                            </li>
                         </ol>
                     </nav>
                 </div>
@@ -113,7 +115,7 @@ const CurrentOffer = () => {
             {/* Properties Section */}
             <div className="section properties">
                 <div className="container">
-                    
+
                     {/* Error State */}
                     {(loadFailed || error) && (
                         <div className="alert alert-danger text-center my-4">
@@ -125,9 +127,9 @@ const CurrentOffer = () => {
                     {/* Filters - Dynamic from API */}
                     <ul className="properties-filter">
                         <li>
-                            <a 
-                                href="#!" 
-                                className={activeFilter === '*' ? 'is_active' : ''} 
+                            <a
+                                href="#!"
+                                className={activeFilter === '*' ? 'is_active' : ''}
                                 onClick={(e) => { e.preventDefault(); setActiveFilter('*'); setCurrentPage(1); }}
                             >
                                 Show All
@@ -135,8 +137,8 @@ const CurrentOffer = () => {
                         </li>
                         {categories.map((cat) => (
                             <li key={cat.id}>
-                                <a 
-                                    href="#!" 
+                                <a
+                                    href="#!"
                                     className={activeFilter === cat.id ? 'is_active' : ''}
                                     onClick={(e) => { e.preventDefault(); setActiveFilter(cat.id); setCurrentPage(1); }}
                                 >
@@ -145,7 +147,7 @@ const CurrentOffer = () => {
                             </li>
                         ))}
                     </ul>
-                    
+
                     {/* Content Grid */}
                     {isLoading && !loadFailed ? (
                         <PortfolioSkeleton />
@@ -170,14 +172,24 @@ const CurrentOffer = () => {
                                         )}
 
                                         {/* Image & Link */}
-                                        <Link to={`/property-details/${item.slug}`}>
-                                            <img 
-                                                src={item.thumbnail_image || '/assets/images/default-property.jpg'} 
-                                                alt={item.title} 
+                                        <div
+                                            className="img-container position-relative"
+                                            style={{ height: '250px', width: '100%', overflow: 'hidden' }}
+                                        >
+                                            <img
+                                                src={item.thumbnail_image || '/assets/images/default-property.jpg'}
+                                                alt={item.title}
+                                                loading="lazy"
+                                                style={{
+                                                    width: '100%',
+                                                    height: '100%',
+                                                    objectFit: 'cover', // makes image fill container
+                                                    objectPosition: 'center', // optional: center the image
+                                                }}
                                             />
-                                        </Link>
+                                        </div>
 
-                                        <span className="category">{item.title}</span>
+                                        <span className="category">{item?.category?.name}</span>
                                         <h4>
                                             <Link to={`/property-details/${item.slug}`}>
                                                 {item.location || item.address || 'Location not specified'}
@@ -185,12 +197,12 @@ const CurrentOffer = () => {
                                         </h4>
 
                                         {/* Property Info - Dynamic Fields */}
-                                         <ul className="property-info">
+                                        <ul className="property-info">
                                             <li><i className="fa fa-bed"></i> Bedrooms: <span>{item.features?.bedrooms || '-'}</span></li>
                                             <li><i className="fa fa-bath"></i> Bathrooms: <span>{item.features?.bathrooms || '-'}</span></li>
                                             <li><i className="fa fa-vector-square"></i> Total Floor Area: <span>{item.features?.total_area || '-'}</span></li>
                                             <li><i className="fa fa-building"></i> Floor: <span>{item.features?.floor || '-'}</span></li>
-                                            <li><i className="fa fa-car"></i> Parking: <span>{item.features?.parking || '-'}</span></li>
+                                            <li><i className="fa fa-car"></i> Garages: <span>{item.features?.garages || '-'}</span></li>
                                         </ul>
 
                                         <div className="property-hover-btn">
@@ -209,15 +221,15 @@ const CurrentOffer = () => {
                                 <ul className="pagination">
                                     {currentPage > 1 && (
                                         <li>
-                                            <a 
-                                                href="#!" 
+                                            <a
+                                                href="#!"
                                                 onClick={(e) => { e.preventDefault(); setCurrentPage(currentPage - 1); }}
                                             >
                                                 &laquo;
                                             </a>
                                         </li>
                                     )}
-                                    
+
                                     {[...Array(lastPage)].map((_, index) => {
                                         const page = index + 1;
                                         // Show limited pages for better UI
@@ -239,8 +251,8 @@ const CurrentOffer = () => {
 
                                     {currentPage < lastPage && (
                                         <li>
-                                            <a 
-                                                href="#!" 
+                                            <a
+                                                href="#!"
                                                 onClick={(e) => { e.preventDefault(); setCurrentPage(currentPage + 1); }}
                                             >
                                                 &raquo;

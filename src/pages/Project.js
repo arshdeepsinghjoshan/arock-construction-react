@@ -89,7 +89,7 @@ const Project = () => {
             {/* Hero Section */}
             <section className="about-hero">
                 <img
-                    src="/assets/images/w1.JPG"
+                    src="/assets/images/Projects.JPG"
                     alt="Projects Arock Construction"
                     className="hero-bg"
                 />
@@ -98,7 +98,7 @@ const Project = () => {
                         className="fw-bold mb-3 display-5"
                         data-aos="fade-up"
                     >
-                        Projects - Arock Construction
+                        Projects
                     </h1>
                     <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="300">
                         <ol className="breadcrumb justify-content-center">
@@ -114,7 +114,7 @@ const Project = () => {
             </section>
 
             {/* Properties Grid */}
-            <div className="section properties py-5">
+            <div className="section properties">
                 <div className="container">
 
                     {/* Error State */}
@@ -126,7 +126,7 @@ const Project = () => {
                     )}
 
                     {/* Filters - Dynamic from API */}
-                    <ul className="properties-filter d-flex justify-content-center list-unstyled gap-3 mb-5">
+                    <ul className="properties-filter">
                         <li>
                             <a
                                 href="#!"
@@ -165,7 +165,7 @@ const Project = () => {
                                     data-aos="fade-up"
                                 >
                                     <div className="property-card h-100">
-                                        <div className="img-container position-relative">
+                                        <div className="img-container position-relative" style={{ height: '312px' }}>
                                             <img
                                                 // Dynamic Image from API
                                                 src={project.thumbnail_image || project.image || '/assets/images/default-project.jpg'}

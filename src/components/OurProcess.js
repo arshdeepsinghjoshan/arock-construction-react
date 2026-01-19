@@ -39,7 +39,7 @@ const OurProcess = () => {
       <div className="container">
         <div className="text-center mb-5">
           <h2 className="fw-bold display-6">Our Process</h2>
-          <p className="text-muted mt-2">From first meeting to final delivery</p>
+          <p className="text-muted mt-2 text-center">From first meeting to final delivery</p>
         </div>
 
         <div className="timeline" ref={timelineRef}>

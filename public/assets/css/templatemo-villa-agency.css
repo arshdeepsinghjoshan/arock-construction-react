@@ -1477,9 +1477,9 @@ footer a:hover {
   padding-left: 6px;
 }
 
-footer .border-top {
+/* footer .border-top {
   border-color: rgba(255, 255, 255, 0.1) !important;
-}
+} */
 
 
 /* 
@@ -2919,46 +2919,60 @@ body {
 
 .lightbox-close {
   position: absolute;
-  top: -50px;
-  right: 0;
-  color: #fff;
-  font-size: 40px;
-  cursor: pointer;
-  transition: all 0.3s;
-  background: none;
+  top: 15px;
+  right: 15px;
+  background: #ff4d4d;
   border: none;
+  color: white;
+  font-size: 28px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
 .lightbox-close:hover {
-  color: var(--primary-color);
-  transform: rotate(90deg);
+  background: #e60000;
+  transform: scale(1.1);
 }
 
 .lightbox-nav {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  color: #fff;
-  font-size: 50px;
-  cursor: pointer;
-  padding: 20px;
-  transition: all 0.3s;
-  background: rgba(177, 122, 39, 0.3);
+  background: rgba(0,0,0,0.5);
   border: none;
+  color: #fff;
+  font-size: 28px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
-}
-
-.lightbox-nav:hover {
-  background: var(--primary-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .lightbox-prev {
-  left: -80px;
+  left: 15px;
 }
 
 .lightbox-next {
-  right: -80px;
+  right: 15px;
 }
+
+.lightbox-nav:hover {
+  background: rgba(0,0,0,0.8);
+  transform: scale(1.1);
+}
+
+
 
 .lightbox-caption {
   text-align: center;
@@ -2969,31 +2983,46 @@ body {
 
 .zoom-controls {
   position: absolute;
-  bottom: -60px;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 15px;
+  gap: 10px;
 }
 
 .zoom-btn {
-  width: 50px;
-  height: 50px;
+  background: #caa55c;  /* theme color */
+  border: none;
+  color: white;
+  font-size: 20px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background: rgba(177, 122, 39, 0.3);
-  border: 2px solid var(--primary-color);
-  color: #fff;
-  font-size: 24px;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
 .zoom-btn:hover {
-  background: var(--primary-color);
+  background: #b88b44;
+  transform: scale(1.2);
 }
+
+.lightbox-close,
+.lightbox-nav,
+.zoom-btn {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+.lightbox-close:hover,
+.lightbox-nav:hover,
+.zoom-btn:hover {
+  box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+}
+
 
 /* Map Section */
 .map-container {
@@ -3043,42 +3072,128 @@ footer a:hover {
 
 /* Responsive */
 @media (max-width: 991px) {
+  /* Hide main navigation */
   .nav {
     display: none;
   }
 
+  /* Lightbox Navigation Buttons */
   .lightbox-prev {
-    left: 10px;
+    left: 15px;       /* Adjusted for tablet */
+    width: 45px;
+    height: 45px;
+    font-size: 24px;
+  }
+
+  .lightbox-next {
+    right: 15px;
+    width: 45px;
+    height: 45px;
+    font-size: 24px;
+  }
+
+  /* Close Button */
+  .lightbox-close {
+    width: 40px;
+    height: 40px;
+    font-size: 26px;
+    top: 12px;
+    right: 12px;
+  }
+
+  /* Zoom Controls */
+  .zoom-controls {
+    bottom: -40px;
+    gap: 10px;
+  }
+
+  .zoom-btn {
+    width: 38px;
+    height: 38px;
+    font-size: 18px;
+  }
+
+  /* Thumbnail Grid */
+  .thumbnail-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  /* Property Header */
+  .property-header h1 {
+    font-size: 1.8rem;  /* Scales down for tablets */
+  }
+
+  /* Lightbox Image */
+  .lightbox-content img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Caption */
+  .lightbox-caption {
+    font-size: 15px;
+    padding: 8px;
+  }
+}
+
+
+@media (max-width: 576px) {
+  /* Grid for thumbnails */
+  .thumbnail-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  /* Lightbox Zoom Controls */
+  .zoom-controls {
+    bottom: -50px;       /* Move controls below image */
+    gap: 8px;            /* Reduce gap on small screens */
+  }
+
+  .zoom-btn {
+    width: 35px;         /* Slightly smaller */
+    height: 35px;
+    font-size: 16px;
+  }
+
+  /* Navigation Buttons (Prev/Next) */
+  .lightbox-nav {
+    width: 40px;
+    height: 40px;
+    font-size: 22px;
+  }
+
+  .lightbox-prev {
+    left: 10px;          /* Move a bit closer to edge */
   }
 
   .lightbox-next {
     right: 10px;
   }
 
-  .thumbnail-grid {
-    grid-template-columns: repeat(2, 1fr);
+  /* Close Button */
+  .lightbox-close {
+    width: 35px;
+    height: 35px;
+    font-size: 24px;
+    top: 10px;
+    right: 10px;
   }
 
-  .property-header h1 {
-    font-size: 1.8rem;
+  /* Lightbox Image */
+  .lightbox-content img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Caption */
+  .lightbox-caption {
+    font-size: 14px;
+    padding: 8px;
   }
 }
 
-@media (max-width: 576px) {
-  .thumbnail-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .zoom-controls {
-    bottom: -50px;
-  }
-
-  .zoom-btn {
-    width: 40px;
-    height: 40px;
-    font-size: 18px;
-  }
-}
 
 :root {
     --primary-color: #b17a27;
@@ -3087,7 +3202,9 @@ footer a:hover {
 
 /* Mobile menu default hidden */
 @media (max-width: 991px) {
-  .nav {
+
+  /* Hide nav EXCEPT tabs */
+  .nav:not(.nav-tabs) {
     display: none;
     flex-direction: column;
     background: #fff;
@@ -3102,11 +3219,27 @@ footer a:hover {
     display: flex;
   }
 
+  /* Ensure tabs are visible */
+  .nav-tabs {
+    display: flex !important;
+    position: static;
+    flex-direction: row;
+  }
+
   .menu-trigger {
     display: block;
     cursor: pointer;
   }
 }
+
+@media (max-width: 991px) {
+  .nav-tabs {
+    overflow-x: auto;
+    white-space: nowrap;
+    flex-wrap: nowrap;
+  }
+}
+
 
 /* Desktop */
 @media (min-width: 992px) {
@@ -3199,6 +3332,12 @@ footer a:hover {
      overflow: hidden;
  }
 
+ @media (max-width: 576px) {
+  .about-hero {
+    min-height: 45vh;  /* Reduce height on mobile */
+  }
+}
+
  .about-hero .hero-bg {
      position: absolute;
      inset: 0;
@@ -3221,3 +3360,48 @@ footer a:hover {
      position: relative;
      z-index: 2;
  }
+
+
+.amenity-dot {
+  width: 10px;
+  height: 10px;
+  background-color: #caa55c; /* gold / theme color */
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.agent-avatar {
+  width: 120px;           /* Bigger size */
+  height: 120px;          /* Bigger size */
+  border-radius: 50%;
+  background: #f1f1f1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.boy-avatar {
+  font-size: 80px;        /* Bigger icon */
+  color: #2c2c2c;
+}
+
+p {
+  font-family: 'Poppins', sans-serif; /* Font style */
+  font-size: 16px;                    /* Font size */
+  line-height: 1.8;                   /* Spacing between lines */
+  color: #333;                        /* Text color */
+  margin-bottom: 15px;                /* Space after each paragraph */
+  text-align: justify;                /* Optional: text alignment */
+}
+
+
+.same-size-img {
+  width: 100%;
+  height: 312px;        /* fixed height for all images */
+  object-fit: cover;    /* fill container without stretching */
+  object-position: center; /* center the image */
+  display: block;       /* removes extra space below image */
+}
+.img-container {
+  overflow: hidden;     /* hide overflow if image is cropped */
+  position: relative;
+}

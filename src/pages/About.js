@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import './About.css'; // Import the custom styles for this page
-
+import { Link } from 'react-router-dom';
 // Assuming other global CSS (like Bootstrap, FontAwesome, AOS, and template styles)
 // are imported in your App.js or main entry file.
 
@@ -21,17 +21,21 @@ const About = () => {
         <main>
             {/* Hero Section */}
             <section className="about-hero">
-                 <img
+                <img
                     src="/assets/images/w1.JPG"
                     alt="About Arock Construction"
                     className="hero-bg"
                 />
                 <div className="container text-center text-white">
                     <h1 className="fw-bold mb-3 display-5 display-md-4 display-lg-3" data-aos="fade-up">About Arock Construction</h1>
-                    <p className="lead fs-4" data-aos="fade-up" data-aos-delay="200">Building Trust, Comfort, and Places That Feel Like They Belong</p>
+                    {/* <p className="lead fs-4" data-aos="fade-up" data-aos-delay="200">Building Trust, Comfort, and Places That Feel Like They Belong</p> */}
                     <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="300">
                         <ol className="breadcrumb justify-content-center">
-                            <li className="breadcrumb-item"><a href="/" className="text-white text-decoration-none">Home</a></li>
+                            <li className="breadcrumb-item">
+                                <Link to="/" className="text-white text-decoration-none">
+                                    Home
+                                </Link>
+                            </li>
                             <li className="breadcrumb-item active text-white-50" aria-current="page">About Us</li>
                         </ol>
                     </nav>
@@ -236,14 +240,13 @@ const About = () => {
                     <div className="d-flex flex-column flex-sm-row
                     justify-content-center align-items-center gap-3" data-aos="fade-up" data-aos-delay="200">
                         {/* Use React Router Link or normal <a> tag depending on your routing setup */}
-                        <a href="/contact" className="btn btn-light btn-lg px-5 py-3 fw-bold w-100 w-sm-auto btn-col">
+                        <Link to="/contact" className="btn btn-light btn-lg px-5 py-3 fw-bold w-100 w-sm-auto btn-col">
                             Contact Us
-                        </a>
+                        </Link>
 
-                        <a href="/project" // Changed from property-details.html to portfolio for consistency with your home page navigation
-                            className="btn btn-outline-light btn-lg px-5 py-3 fw-bold w-100 w-sm-auto btn-col">
+                        <Link to="/portfolio" className="btn btn-outline-light btn-lg px-5 py-3 fw-bold w-100 w-sm-auto btn-col">
                             View Projects
-                        </a>
+                        </Link>
 
                     </div>
 
