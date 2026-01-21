@@ -97,19 +97,19 @@ const Header = () => {
                       HOUSE & LAND PACKAGES
                     </Link>
                   </li>
-                  {/* <li>
-                    <Link to="/property-details" className={isActive('/property-details')} onClick={closeMenu}>
-                      Property Details
-                    </Link>
-                  </li> */}
                   <li>
-                    <Link to="/contact" className={isActive('/contact')} onClick={closeMenu}>
-                      <i className="fa fa-calendar"></i> Schedule a visit
+                    <Link to="/contact" className={`hide-desktop ${isActive('/contact') ? 'active' : ''}`} onClick={closeMenu}>
+                      Contact us
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/contact" onClick={closeMenu}>
+                      <i className="fa fa-calendar"></i> <span className={isActive('/contact') ? 'active' : ''}>Schedule a visit</span>
                     </Link>
                   </li>
                   {/* <li>
-                    <Link to="/contact" onClick={closeMenu}>
-                      <i className="fa fa-calendar"></i> Schedule a visit
+                    <Link to="/contact" className={isActive('/contact')} onClick={closeMenu}>
+                      Contact us
                     </Link>
                   </li> */}
                 </ul>

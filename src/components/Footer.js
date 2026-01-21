@@ -38,7 +38,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/current-offer" className="text-light text-decoration-none d-block py-1">
-                  House And Land Packages
+                  House & Land Packages
                 </Link>
               </li>
               <li>

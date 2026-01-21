@@ -177,7 +177,7 @@ const Project = () => {
                                         <div className="card-overlay">
                                             <div className="overlay-logo text-center">
                                                 <div className="position-relative d-inline-block">
-                                                    <div className="logo-icon badge-gradient shadow-lg">
+                                                    <div className="logo-icon badge-gradient">
                                                         <img
                                                             src="/assets/images/logo.png"
                                                             alt="Arock Logo"

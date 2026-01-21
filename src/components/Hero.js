@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Hero = ({ animateContent }) => {
   return (
@@ -54,8 +55,8 @@ const Hero = ({ animateContent }) => {
               data-delay="1.1s"
               style={{ animationDelay: '1.1s' }}
             >
-              <a href="/project" className="btn btn-lg btn-col">Display Homes</a>
-              <a href="/contact" className="btn btn-lg btn-col">Book An Appointment</a>
+              <Link to="/project" className="btn btn-lg btn-col">Display Homes</Link>
+              <Link to="/contact" className="btn btn-lg btn-col">Book An Appointment</Link>
             </div>
           </div>
         </div>
