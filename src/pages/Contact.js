@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import './Contact.css'; // Import the custom styles for this page
-// Assuming other global CSS (like Bootstrap, FontAwesome, AOS, and template styles)
-// are imported in your App.js or main entry file.
-// If you use React Router, you'll want to use Link from 'react-router-dom'
+import './Contact.css';
 import { Link } from 'react-router-dom';
+// import api from '/untiapi'; // Make sure this points to your api config
+import api from '../utils/api'; // Ensure this path matches your project structure
 
 const Contact = () => {
-    const [selectedPropertyType, setSelectedPropertyType] = useState('singleStory');
+    const [selectedPropertyType, setSelectedPropertyType] = useState(null);
+    const [categories, setCategories] = useState([]);
+    const [loadingCategories, setLoadingCategories] = useState(true);
+    const [submitting, setSubmitting] = useState(false);
+    const [errors, setErrors] = useState({});
+    const [successMessage, setSuccessMessage] = useState('');
+
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
@@ -16,14 +21,35 @@ const Contact = () => {
         agreeToCommunications: true,
     });
 
-    const propertyTypes = [
-        { id: 'singleStory', icon: 'fas fa-home', label: 'Single Story' },
-        { id: 'doubleStory', icon: 'fas fa-building', label: 'Double Story' },
-        { id: 'splitLevel', icon: 'fas fa-city', label: 'Split Level' },
-    ];
+    // Fetch project categories from API
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                setLoadingCategories(true);
+                const res = await api.get('/project-categories');
+                setCategories(res.data.data || res.data);
+                // Set default selected category
+                if (res.data.data?.length > 0) {
+                    setSelectedPropertyType(res.data.data[0].id);
+                } else if (res.data?.length > 0) {
+                    setSelectedPropertyType(res.data[0].id);
+                }
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            } finally {
+                setLoadingCategories(false);
+            }
+        };
 
-    const handlePropertyTypeSelect = (typeId) => {
-        setSelectedPropertyType(typeId);
+        fetchCategories();
+    }, []);
+
+    const handlePropertyTypeSelect = (categoryId) => {
+        setSelectedPropertyType(categoryId);
+        // Clear category error when selected
+        if (errors.project_category_id) {
+            setErrors(prev => ({ ...prev, project_category_id: null }));
+        }
     };
 
     const handleChange = (e) => {
@@ -32,33 +58,87 @@ const Contact = () => {
             ...prevData,
             [name]: type === 'checkbox' ? checked : value
         }));
+
+        // Clear error for this field when user starts typing
+        if (errors[name]) {
+            setErrors(prev => ({ ...prev, [name]: null }));
+        }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Form Submitted:", { ...formData, selectedPropertyType });
-        // Here you would typically send data to a backend API
-        alert('Thank you for your enquiry! We will get back to you soon.');
-        // Optionally reset form
-        setFormData({
-            fullName: '',
-            email: '',
-            phone: '',
-            budget: 'Under $500k',
-            message: '',
-            agreeToCommunications: true,
-        });
-        setSelectedPropertyType('singleStory');
+        setErrors({});
+        setSuccessMessage('');
+        setSubmitting(true);
+
+        try {
+            const payload = {
+                fullName: formData.fullName,
+                email: formData.email,
+                phone: formData.phone,
+                budget: formData.budget,
+                project_category_id: selectedPropertyType,
+                message: formData.message,
+                agreeToCommunications: formData.agreeToCommunications,
+            };
+
+            const response = await api.post('/schedule-enquiry', payload);
+
+            // Success
+            setSuccessMessage('Thank you for your enquiry! We will get back to you soon.');
+            alert('Thank you for your enquiry! We will get back to you soon.');
+            // Reset form
+            setFormData({
+                fullName: '',
+                email: '',
+                phone: '',
+                budget: 'Under $500k',
+                message: '',
+                agreeToCommunications: true,
+            });
+            
+            // Reset to first category
+            if (categories.length > 0) {
+                setSelectedPropertyType(categories[0].id);
+            }
+
+        } catch (error) {
+            console.error('Form submission error:', error);
+            
+            if (error.response?.status === 422) {
+                // Laravel validation errors
+                const validationErrors = error.response.data.errors;
+                setErrors(validationErrors);
+            } else {
+                setErrors({ general: 'Something went wrong. Please try again later.' });
+            }
+        } finally {
+            setSubmitting(false);
+        }
     };
 
-    // If AOS is initialized globally in App.js with `once: true`,
-    // you typically don't need to do anything specific here unless
-    // you have dynamically loaded content you need to tell AOS about.
-    // useEffect(() => {
-    //     if (window.AOS) {
-    //         window.AOS.refresh();
-    //     }
-    // }, []);
+    // Get icon for category (you can customize based on your category names)
+    const getCategoryIcon = (categoryName) => {
+        const name = categoryName?.toLowerCase() || '';
+        if (name.includes('single')) return 'fas fa-home';
+        if (name.includes('double')) return 'fas fa-building';
+        if (name.includes('split')) return 'fas fa-city';
+        if (name.includes('apartment')) return 'fas fa-building';
+        if (name.includes('villa')) return 'fas fa-hotel';
+        return 'fas fa-home';
+    };
+
+    // Skeleton loader component for categories
+    const CategorySkeleton = () => (
+        <div className="property-type-grid">
+            {[1, 2, 3].map((item) => (
+                <div key={item} className="type-card skeleton-card">
+                    <div className="skeleton skeleton-icon"></div>
+                    <div className="skeleton skeleton-text"></div>
+                </div>
+            ))}
+        </div>
+    );
 
     return (
         <main>
@@ -75,7 +155,6 @@ const Contact = () => {
                         <div className="glass-card" data-aos="zoom-in">
                             <div className="row g-0">
                                 <div className="col-lg-5 info-side">
-                                    {/* <span className="feature-tag">Trusted Developers</span> */}
                                     <h2 className="fw-bold mb-4">Let's Build Something Great Together</h2>
                                     <p className="mb-5 opacity-75">Fill out the form and our property consultant will get back to you within 24 hours to discuss your requirements and schedule a site visit.</p>
 
@@ -130,88 +209,161 @@ const Contact = () => {
                                     </div>
                                     <h3 className="fw-bold mb-4" style={{ color: 'var(--dark-blue)' }}>Project Enquiry Form</h3>
 
+                                    {/* Success Message */}
+                                    {successMessage && (
+                                        <div className="alert alert-success alert-dismissible fade show" role="alert">
+                                            <i className="fas fa-check-circle me-2"></i>
+                                            {successMessage}
+                                            <button 
+                                                type="button" 
+                                                className="btn-close" 
+                                                onClick={() => setSuccessMessage('')}
+                                            ></button>
+                                        </div>
+                                    )}
+
+                                    {/* General Error */}
+                                    {errors.general && (
+                                        <div className="alert alert-danger alert-dismissible fade show" role="alert">
+                                            <i className="fas fa-exclamation-circle me-2"></i>
+                                            {errors.general}
+                                            <button 
+                                                type="button" 
+                                                className="btn-close" 
+                                                onClick={() => setErrors(prev => ({ ...prev, general: null }))}
+                                            ></button>
+                                        </div>
+                                    )}
+
                                     <form onSubmit={handleSubmit}>
                                         <div className="row">
+                                            {/* Property Type Selection */}
                                             <div className="col-12">
                                                 <label className="form-label small fw-bold">SELECT PROPERTY TYPE</label>
-                                                <div className="property-type-grid">
-                                                    {propertyTypes.map(type => (
-                                                        <div
-                                                            key={type.id}
-                                                            className={`type-card ${selectedPropertyType === type.id ? 'active' : ''}`}
-                                                            onClick={() => handlePropertyTypeSelect(type.id)}
-                                                        >
-                                                            <i className={type.icon}></i>
-                                                            <span>{type.label}</span>
-                                                        </div>
-                                                    ))}
-                                                </div>
+                                                
+                                                {loadingCategories ? (
+                                                    <CategorySkeleton />
+                                                ) : (
+                                                    <div className="property-type-grid">
+                                                        {categories.map(category => (
+                                                            <div
+                                                                key={category.id}
+                                                                className={`type-card ${selectedPropertyType === category.id ? 'active' : ''}`}
+                                                                onClick={() => handlePropertyTypeSelect(category.id)}
+                                                            >
+                                                                <i className={getCategoryIcon(category.name)}></i>
+                                                                <span>{category.name}</span>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                                
+                                                {errors.project_category_id && (
+                                                    <div className="text-danger small mt-1">
+                                                        <i className="fas fa-exclamation-circle me-1"></i>
+                                                        {errors.project_category_id[0]}
+                                                    </div>
+                                                )}
                                             </div>
+
+                                            {/* Full Name */}
                                             <div className="col-md-6">
                                                 <label className="form-label small fw-bold">FULL NAME</label>
                                                 <input
                                                     type="text"
-                                                    className="form-control"
+                                                    className={`form-control ${errors.fullName ? 'is-invalid' : ''}`}
                                                     placeholder="John Doe"
                                                     name="fullName"
                                                     value={formData.fullName}
                                                     onChange={handleChange}
-                                                    required
                                                 />
+                                                {errors.fullName && (
+                                                    <div className="invalid-feedback">
+                                                        {errors.fullName[0]}
+                                                    </div>
+                                                )}
                                             </div>
+
+                                            {/* Email */}
                                             <div className="col-md-6">
                                                 <label className="form-label small fw-bold">EMAIL ADDRESS</label>
                                                 <input
                                                     type="email"
-                                                    className="form-control"
+                                                    className={`form-control ${errors.email ? 'is-invalid' : ''}`}
                                                     placeholder="john@example.com"
                                                     name="email"
                                                     value={formData.email}
                                                     onChange={handleChange}
-                                                    required
                                                 />
+                                                {errors.email && (
+                                                    <div className="invalid-feedback">
+                                                        {errors.email[0]}
+                                                    </div>
+                                                )}
                                             </div>
+
+                                            {/* Phone */}
                                             <div className="col-md-6">
                                                 <label className="form-label small fw-bold">PHONE NUMBER</label>
                                                 <input
                                                     type="text"
-                                                    className="form-control"
+                                                    className={`form-control ${errors.phone ? 'is-invalid' : ''}`}
                                                     placeholder="+1 (555) 000-0000"
                                                     name="phone"
                                                     value={formData.phone}
                                                     onChange={handleChange}
-                                                    required
                                                 />
+                                                {errors.phone && (
+                                                    <div className="invalid-feedback">
+                                                        {errors.phone[0]}
+                                                    </div>
+                                                )}
                                             </div>
+
+                                            {/* Budget */}
                                             <div className="col-md-6">
                                                 <label className="form-label small fw-bold">BUDGET RANGE</label>
                                                 <select
-                                                    className="form-select"
+                                                    className={`form-select ${errors.budget ? 'is-invalid' : ''}`}
                                                     name="budget"
                                                     value={formData.budget}
                                                     onChange={handleChange}
                                                 >
-                                                    <option>Under $500k</option>
-                                                    <option>$500k - $1M</option>
-                                                    <option>$1M - $3M</option>
-                                                    <option>$3M+</option>
+                                                    <option value="Under $500k">Under $500k</option>
+                                                    <option value="$500k - $1M">$500k - $1M</option>
+                                                    <option value="$1M - $3M">$1M - $3M</option>
+                                                    <option value="$3M+">$3M+</option>
                                                 </select>
+                                                {errors.budget && (
+                                                    <div className="invalid-feedback">
+                                                        {errors.budget[0]}
+                                                    </div>
+                                                )}
                                             </div>
+
+                                            {/* Message */}
                                             <div className="col-12">
                                                 <label className="form-label small fw-bold">YOUR MESSAGE</label>
                                                 <textarea
-                                                    className="form-control"
+                                                    className={`form-control ${errors.message ? 'is-invalid' : ''}`}
                                                     rows="4"
                                                     placeholder="Tell us more about your dream project..."
                                                     name="message"
                                                     value={formData.message}
                                                     onChange={handleChange}
                                                 ></textarea>
+                                                {errors.message && (
+                                                    <div className="invalid-feedback">
+                                                        {errors.message[0]}
+                                                    </div>
+                                                )}
                                             </div>
+
+                                            {/* Agreement Checkbox */}
                                             <div className="col-12">
                                                 <div className="form-check mb-4">
                                                     <input
-                                                        className="form-check-input"
+                                                        className={`form-check-input ${errors.agreeToCommunications ? 'is-invalid' : ''}`}
                                                         type="checkbox"
                                                         id="agree"
                                                         name="agreeToCommunications"
@@ -221,8 +373,30 @@ const Contact = () => {
                                                     <label className="form-check-label small text-muted" htmlFor="agree">
                                                         I agree to receive communications regarding my enquiry.
                                                     </label>
+                                                    {errors.agreeToCommunications && (
+                                                        <div className="invalid-feedback d-block">
+                                                            {errors.agreeToCommunications[0]}
+                                                        </div>
+                                                    )}
                                                 </div>
-                                                <button type="submit" className="btn-enquiry">Send Message <i className="fas fa-paper-plane ms-2"></i></button>
+
+                                                {/* Submit Button */}
+                                                <button 
+                                                    type="submit" 
+                                                    className="btn-enquiry"
+                                                    disabled={submitting || loadingCategories}
+                                                >
+                                                    {submitting ? (
+                                                        <>
+                                                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                                            Sending...
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            Send Message <i className="fas fa-paper-plane ms-2"></i>
+                                                        </>
+                                                    )}
+                                                </button>
                                             </div>
                                         </div>
                                     </form>
@@ -316,7 +490,6 @@ const Contact = () => {
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
