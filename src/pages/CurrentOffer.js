@@ -201,7 +201,7 @@ const CurrentOffer = () => {
                                             <li><i className="fa fa-bed"></i> Bedrooms: <span>{item.features?.bedrooms || '-'}</span></li>
                                             <li><i className="fa fa-bath"></i> Bathrooms: <span>{item.features?.bathrooms || '-'}</span></li>
                                             <li><i className="fa fa-vector-square"></i> Total Floor Area: <span>{item.features?.total_area || '-'}</span></li>
-                                            <li><i className="fa fa-building"></i> Floor: <span>{item.features?.floor || '-'}</span></li>
+                                            <li><i className="fa fa-building"></i> Floors: <span>{item.features?.floor || '-'}</span></li>
                                             <li><i className="fa fa-car"></i> Garages: <span>{item.features?.garages || '-'}</span></li>
                                         </ul>
 

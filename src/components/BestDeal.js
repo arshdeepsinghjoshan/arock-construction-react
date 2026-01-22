@@ -149,7 +149,7 @@ const BestDeal = () => {
                                                     <div className="info-table">
                                                         <ul>
                                                             <li>Total Floor Area <span>{project.features?.total_area || '-'}</span></li>
-                                                            <li>Floor <span>{project.features?.floor || '-'}</span></li>
+                                                            <li>Floors <span>{project.features?.floor || '-'}</span></li>
                                                             <li>Bedrooms <span>{project.features?.bedrooms || '-'}</span></li>
                                                             <li>Garages <span>{project.features?.garages || '-'}</span></li>
                                                             <li>Bathrooms <span>{project.features?.bathrooms || '-'}</span></li>
