@@ -1537,6 +1537,7 @@ Properties Style
   list-style: none;
   text-align: center;
   margin-bottom: 70px;
+  cursor: pointer;
 }
 
 .properties ul.properties-filter li {

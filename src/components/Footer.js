@@ -62,8 +62,8 @@ const Footer = () => {
 
             <p className="text-light mb-2">
               <i className="bi bi-telephone-fill me-2"></i>
-              <a href="tel:+61433271896" className="text-light text-decoration-none">
-                +61 433 271 896
+              <a href="tel:+61420999007" className="text-light text-decoration-none">
+                +61 420 999 007
               </a>
             </p>
 

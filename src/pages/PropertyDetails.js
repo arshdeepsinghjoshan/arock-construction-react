@@ -284,21 +284,21 @@ const PropertyDetailsPage = () => {
                     <i className="bi bi-person-circle boy-avatar"></i>
                   </div>
 
-                  <h4 className="agent-name">Michael Johnson</h4>
+                  <h4 className="agent-name">Mithil Patel</h4>
                   <p className="agent-role text-center">Senior Property Consultant</p>
                   <div className="agent-contact">
-                    <a href="tel:+1234567890">
-                      <i className="bi bi-telephone-fill text-primary-custom"></i> +1 (234)
-                      567-8900
+                    <a href="tel:+61420999007">
+                      <i className="bi bi-telephone-fill text-primary-custom"></i> +61 (420)
+                      999-007
                     </a>
-                    <a href="mailto:agent@company.com">
+                    <a href="mailto:sales@arockconstruction.com.au">
                       <i className="bi bi-envelope-fill text-primary-custom"></i>
-                      agent@company.com
+                      sales@arockconstruction.com.au
                     </a>
                   </div>
                   <button
                     className="btn-submit mt-4"
-                    onClick={() => window.location.href = "tel:+1234567890"}
+                    onClick={() => window.location.href = "tel:+61420999007"}
                   >
                     <i className="bi bi-telephone-fill me-2"></i>
                     Request Call Back
