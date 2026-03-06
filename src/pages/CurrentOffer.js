@@ -192,7 +192,7 @@ const CurrentOffer = () => {
                                         <span className="category">{item?.category?.name}</span>
                                         <h4>
                                             <Link to={`/property-details/${item.slug}`}>
-                                                {item.location || item.address || 'Location not specified'}
+                                                {item.title || item.location || item.address || 'Location not specified'}
                                             </Link>
                                         </h4>
 

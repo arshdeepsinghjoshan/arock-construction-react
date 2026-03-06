@@ -2246,6 +2246,8 @@ body {
 @media (max-width: 576px) {
   .logo-img {
     max-height: 70px;
+    width: auto;
+    object-fit: contain;
   }
 }
 .navbar-brand {
