@@ -179,7 +179,7 @@ const Project = () => {
                                                 <div className="position-relative d-inline-block">
                                                     <div className="logo-icon badge-gradient">
                                                         <img
-                                                            src="/assets/images/logo.png"
+                                                            src="/assets/images/Arock LOGO (GN) Final.png"
                                                             alt="Arock Logo"
                                                             className="logo-img-small"
                                                         />

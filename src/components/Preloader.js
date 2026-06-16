@@ -26,7 +26,7 @@ const Preloader = () => {
       {/* Old Preloader */}
       <div id="js-preloader" className="js-preloader">
         <div className="preloader-inner">
-          <img src="/assets/images/logo1.png" alt="Logo" className="loader-logo" />
+          <img src="/assets/images/logov.png" alt="Logo" className="loader-logo" />
         </div>
       </div>
 

@@ -189,14 +189,14 @@ const Contact = () => {
                                         <div>
                                             <h6 className="mb-0 fw-bold">Main Office</h6>
                                             <a
-                                                href="https://www.google.com/maps?q=Unit+1/24+Technology+Drive+Augustine+Heights+Queensland+4300"
+                                                href="https://www.google.com/maps?q=Unit+10/23+East+Owen+Street+Raceview+QLD+4306"
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="mb-0 d-block text-white opacity-75 text-decoration-none"
                                             >
-                                                Unit 1/24 Technology Drive,<br />
-                                                Augustine Heights,<br />
-                                                Queensland 4300
+                                                Unit 10/23 East Owen Street,<br />
+                                                Raceview QLD 4306,<br />
+                    
                                             </a>
                                         </div>
                                     </div>
@@ -447,7 +447,7 @@ const Contact = () => {
                             </div>
                             <div className="map-container position-relative">
                                 <iframe
-                                    src="https://www.google.com/maps?q=Unit+1/24+Technology+Drive+Augustine+Heights+Queensland+4300&output=embed"
+                                    src="https://www.google.com/maps?q=Unit+10/23+East+Owen+Street+Raceview+QLD+4306&output=embed"
                                     width="100%"
                                     height="500"
                                     style={{
@@ -471,15 +471,14 @@ const Contact = () => {
 
                                         <p className="small text-muted mb-3">
                                             <i className="fas fa-map-marker-alt me-2 text-warning"></i>
-                                            Unit 1/24 Technology Drive,<br />
-                                            Augustine Heights,<br />
-                                            Queensland 4300
+                                            Unit 10/23 East Owen Street,<br />
+                                            Raceview QLD 4306,<br />
                                         </p>
 
                                         <hr />
 
                                         <a
-                                            href="https://www.google.com/maps?q=Unit+1/24+Technology+Drive+Augustine+Heights+Queensland+4300"
+                                            href="https://www.google.com/maps?q=Unit+10/23+East+Owen+Street+Raceview+QLD+4306"
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="btn btn-sm w-100 text-white"

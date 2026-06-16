@@ -41,54 +41,54 @@ function App() {
   }, []);
 
   // Disable right-click, copy, cut, and select
-  useEffect(() => {
-    const disableContextMenu = (e) => {
-      e.preventDefault();
-      return false;
-    };
+  // useEffect(() => {
+  //   const disableContextMenu = (e) => {
+  //     e.preventDefault();
+  //     return false;
+  //   };
 
-    const disableCopy = (e) => {
-      e.preventDefault();
-      return false;
-    };
+  //   const disableCopy = (e) => {
+  //     e.preventDefault();
+  //     return false;
+  //   };
 
-    const disableSelection = (e) => {
-      e.preventDefault();
-      return false;
-    };
+  //   const disableSelection = (e) => {
+  //     e.preventDefault();
+  //     return false;
+  //   };
 
-    const disableKeyboardShortcuts = (e) => {
-      // Disable Ctrl+C, Ctrl+U, Ctrl+S, F12, Ctrl+Shift+I
-      if (
-        (e.ctrlKey && (e.key === 'c' || e.key === 'C')) ||
-        (e.ctrlKey && (e.key === 'u' || e.key === 'U')) ||
-        (e.ctrlKey && (e.key === 's' || e.key === 'S')) ||
-        (e.ctrlKey && e.shiftKey && (e.key === 'i' || e.key === 'I')) ||
-        (e.ctrlKey && e.shiftKey && (e.key === 'j' || e.key === 'J')) ||
-        (e.ctrlKey && e.shiftKey && (e.key === 'c' || e.key === 'C')) ||
-        e.key === 'F12'
-      ) {
-        e.preventDefault();
-        return false;
-      }
-    };
+  //   const disableKeyboardShortcuts = (e) => {
+  //     // Disable Ctrl+C, Ctrl+U, Ctrl+S, F12, Ctrl+Shift+I
+  //     if (
+  //       (e.ctrlKey && (e.key === 'c' || e.key === 'C')) ||
+  //       (e.ctrlKey && (e.key === 'u' || e.key === 'U')) ||
+  //       (e.ctrlKey && (e.key === 's' || e.key === 'S')) ||
+  //       (e.ctrlKey && e.shiftKey && (e.key === 'i' || e.key === 'I')) ||
+  //       (e.ctrlKey && e.shiftKey && (e.key === 'j' || e.key === 'J')) ||
+  //       (e.ctrlKey && e.shiftKey && (e.key === 'c' || e.key === 'C')) ||
+  //       e.key === 'F12'
+  //     ) {
+  //       e.preventDefault();
+  //       return false;
+  //     }
+  //   };
 
-    // Add event listeners
-    document.addEventListener('contextmenu', disableContextMenu);
-    document.addEventListener('copy', disableCopy);
-    document.addEventListener('cut', disableCopy);
-    document.addEventListener('selectstart', disableSelection);
-    document.addEventListener('keydown', disableKeyboardShortcuts);
+  //   // Add event listeners
+  //   document.addEventListener('contextmenu', disableContextMenu);
+  //   document.addEventListener('copy', disableCopy);
+  //   document.addEventListener('cut', disableCopy);
+  //   document.addEventListener('selectstart', disableSelection);
+  //   document.addEventListener('keydown', disableKeyboardShortcuts);
 
-    // Cleanup
-    return () => {
-      document.removeEventListener('contextmenu', disableContextMenu);
-      document.removeEventListener('copy', disableCopy);
-      document.removeEventListener('cut', disableCopy);
-      document.removeEventListener('selectstart', disableSelection);
-      document.removeEventListener('keydown', disableKeyboardShortcuts);
-    };
-  }, []);
+  //   // Cleanup
+  //   return () => {
+  //     document.removeEventListener('contextmenu', disableContextMenu);
+  //     document.removeEventListener('copy', disableCopy);
+  //     document.removeEventListener('cut', disableCopy);
+  //     document.removeEventListener('selectstart', disableSelection);
+  //     document.removeEventListener('keydown', disableKeyboardShortcuts);
+  //   };
+  // }, []);
 
   useEffect(() => {
     if (!loading) {
