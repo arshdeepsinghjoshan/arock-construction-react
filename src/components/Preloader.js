@@ -22,34 +22,24 @@ const Preloader = () => {
   }, []);
 
   return (
-    <>
-      {/* Old Preloader */}
-      <div id="js-preloader" className="js-preloader">
-        <div className="preloader-inner">
-          <img src="/assets/images/logov.png" alt="Logo" className="loader-logo" />
-        </div>
-      </div>
+    <section
+      id="preloader"
+      className={`d-flex flex-column align-items-center justify-content-center position-fixed top-0 start-0 w-100 h-100 preloader-bg ${shatter ? 'shatter-open' : ''}`}
+    >
+      <img
+        src="/assets/images/ALogo.png"
+        id="logo1"
+        className="img-fluid w-25 zoom-in"
+        alt=""
+      />
 
-      {/* New Preloader */}
-      <section
-        id="preloader"
-        className={`d-flex flex-column align-items-center justify-content-center position-fixed top-0 start-0 w-100 h-100 preloader-bg ${shatter ? 'shatter-open' : ''}`}
-      >
-        <img
-          src="/assets/images/ALogo.png"
-          id="logo1"
-          className="img-fluid w-25 zoom-in"
-          alt=""
-        />
-
-        <img
-          src="/assets/images/AROCK.png"
-          id="logo2"
-          className={`img-fluid w-20 mt-2 mw-369 ${showLogo2 ? 'slide-up' : 'd-none'}`}
-          alt=""
-        />
-      </section>
-    </>
+      <img
+        src="/assets/images/AROCK.png"
+        id="logo2"
+        className={`img-fluid w-20 mt-2 mw-369 ${showLogo2 ? 'slide-up' : 'd-none'}`}
+        alt=""
+      />
+    </section>
   );
 };
 
